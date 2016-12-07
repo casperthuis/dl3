@@ -334,20 +334,21 @@ def _tnse(layer, logits, name):
     pca[:,1] = pca[:,1]/ float(np.max(pca[:,1]))
 
 
-    prediction = np.argmax(logits[0:1000], axis=1)
+    prediction = np.argmax(logits, axis=1)
     print("Creating figure")
-    pca = pca[0:1000,:,:,:] 
     # create figure
     fig = plt.figure()
     classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     for i in range(len(classes)):
         class_points = pca[prediction == i]
-        plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
+        plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.3)
     plt.axis([0,1,0,1])
     plt.legend(tuple(classes))
     print("Saved image to images/%s"%name)
     plt.savefig('images/%s'%name)
     plt.close()
+
+
 def initialize_folders():
     """
     Initializes all folders in FLAGS variable.
@@ -385,7 +386,7 @@ def main(_):
             raise ValueError("--train_model argument can be linear or siamese")
     else:
         feature_extraction()
-    print("Total run time%i" %((time.time() - start)/60.0))
+    print("Total run time%i seconds" %((time.time() - start)))
 
 
 
