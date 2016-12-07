@@ -312,29 +312,8 @@ def feature_extraction():
 
         print("Calculating TSNE")
         _tnse(fcl2, logits, "tnse_fcl2.png") 
-        #tnse = TSNE(n_components=2, init='pca', random_state=0)
-        #pca = tnse.fit_transform(fcl2)
-        #prediction = np.argmax(logits, axis=1)
-        #fig = plt.figure()
-        
-             
-      
-        #classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
-        #for i in range(Convnn.n_classes):
-        #    class_points = pca[prediction == i]
-        #    plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
-        
-        #plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
-        #plt.legend(tuple(classes))
-        #plt.savefig('images/tsne_plot.png')
-        
-
-        #for label in range(Convnn.n_classes):
-        
-        #    class_pc = pc[prediction == label]
-        #    non_class_pc = pc[prediction != label]
-        #    selection_no_class = np.random.choice(len(non_class_pc), len(class_pc))
-             
+        #_tnse(fcl1, logits, "tnse_fcl1.png")
+        #_tnse(flatten, logits, "tnse_flatten.png")
 
     ########################
     # END OF YOUR CODE    #
@@ -346,8 +325,8 @@ def _tnse(layer, logits, name):
     # normalise data
     layer[:,0] = layer[:,0] + abs(np.min(layer[:,0]))
     layer[:,1] = layer[:,1] + abs(np.min(layer[:,1]))
-    layer[:,0] = layer[:,0]/np.max(layer[:,0])
-    layer[:,1] = layer[:,1]/np.max(layer[:,1])
+    layer[:,0] = layer[:,0]/ float(np.max(layer[:,0]))
+    layer[:,1] = layer[:,1]/ float(np.max(layer[:,1]))
 
     # Create tsne
     tnse = TSNE(n_components=2, init='pca', random_state=0)
@@ -357,7 +336,7 @@ def _tnse(layer, logits, name):
     prediction = np.argmax(logits, axis=1)
     print("Creating figure")
     
-
+    # create figure
     fig = plt.figure()
     classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     for i in range(len(classes)):
