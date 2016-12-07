@@ -305,8 +305,8 @@ def feature_extraction():
                                         Convnn.fcl1,
                                         Convnn.fcl2,
                                         Convnn.logits ],
-                                      
-                                        feed_dict={x: x_test[0:1000,:,:,:], y: y_test[0:1000]})
+                                        feed_dict={x:x_test, y:y_test}) 
+                                        #feed_dict={x: x_test[0:1000,:,:,:], y: y_test[0:1000]})
 
         print("accuracy%f"%acc)
         print("Calculating TSNE")
@@ -334,9 +334,9 @@ def _tnse(layer, logits, name):
     pca[:,1] = pca[:,1]/ float(np.max(pca[:,1]))
 
 
-    prediction = np.argmax(logits, axis=1)
+    prediction = np.argmax(logits[0:1000], axis=1)
     print("Creating figure")
-    
+    pca = pca[0:1000,:,:,:] 
     # create figure
     fig = plt.figure()
     classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']

@@ -14,14 +14,7 @@ Tensor("ConvNet/conv1/pool1:0", shape=(?, 16, 16, 64), dtype=float32)
 Tensor("ConvNet/conv2/pool2:0", shape=(?, 8, 8, 64), dtype=float32)
 loading previous session
 Evaluating model
+accuracy0.706700
 Calculating TSNE
 Calculating TSNE for layertnse_fcl2.png
 Creating figure
-Saved image to images/tnse_fcl2.png
-Calculating TSNE for layertnse_fcl1.png
-Creating figure
-Saved image to images/tnse_fcl1.png
-Calculating TSNE for layertnse_flatten.png
-Creating figure
-Saved image to images/tnse_flatten.png
-Total run time0
