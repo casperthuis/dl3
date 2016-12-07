@@ -312,8 +312,8 @@ def feature_extraction():
 
         print("Calculating TSNE")
         _tnse(fcl2, logits, "tnse_fcl2.png") 
-        #_tnse(fcl1, logits, "tnse_fcl1.png")
-        #_tnse(flatten, logits, "tnse_flatten.png")
+        _tnse(fcl1, logits, "tnse_fcl1.png")
+        _tnse(flatten, logits, "tnse_flatten.png")
 
     ########################
     # END OF YOUR CODE    #
@@ -343,6 +343,7 @@ def _tnse(layer, logits, name):
         class_points = pca[prediction == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.legend(tuple(classes))
+    print("Saved image to images/%s"%name)
     plt.savefig('images/%s'%name)
 
 def initialize_folders():
