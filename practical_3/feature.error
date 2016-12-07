@@ -9,7 +9,7 @@ major: 3 minor: 5 memoryClockRate (GHz) 0.745
 pciBusID 0000:02:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x3c738c0
+W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x3468cd0
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
 name: Tesla K40m
 major: 3 minor: 5 memoryClockRate (GHz) 0.745
@@ -23,24 +23,3 @@ I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-Traceback (most recent call last):
-  File "train_model.py", line 439, in <module>
-    tf.app.run()
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/tensorflow/python/platform/app.py", line 30, in run
-    sys.exit(main(sys.argv))
-  File "train_model.py", line 405, in main
-    feature_extraction()
-  File "train_model.py", line 315, in feature_extraction
-    pca = tnse.fit_transform(fcl2)
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/sklearn/manifold/t_sne.py", line 866, in fit_transform
-    embedding = self._fit(X)
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/sklearn/manifold/t_sne.py", line 777, in _fit
-    skip_num_points=skip_num_points)
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/sklearn/manifold/t_sne.py", line 843, in _tsne
-    params, error, it = _gradient_descent(obj_func, params, **opt_args)
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/sklearn/manifold/t_sne.py", line 386, in _gradient_descent
-    new_error, grad = objective(p, *args, **kwargs)
-  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/sklearn/manifold/t_sne.py", line 289, in _kl_divergence_bh
-    dof=degrees_of_freedom)
-  File "sklearn/manifold/_barnes_hut_tsne.pyx", line 762, in sklearn.manifold._barnes_hut_tsne.gradient (sklearn/manifold/_barnes_hut_tsne.c:7617)
-AssertionError: [t-SNE] Insertion failed

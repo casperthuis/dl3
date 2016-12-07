@@ -17,5 +17,4 @@ Evaluating model
 (10000, 32, 32, 3)
 (10000, 10)
 Calculating TSNE
-[t-SNE] Error: point (-3.986121750e+01) is above right edge of node (-3.986122131e+01)
-[t-SNE] ERROR
+Total run time0

@@ -294,8 +294,8 @@ def feature_extraction():
         sess.run(tf.initialize_all_variables())
         saver = tf.train.Saver()
         print("loading previous session")
-        saver.restore(sess, FLAGS.checkpoint_dir + "/convnet.ckpt")
-        #saver.restore(sess, FLAGS.checkpoint_dir + "/my_model.cpkt")
+        #saver.restore(sess, FLAGS.checkpoint_dir + "/convnet.ckpt")
+        saver.restore(sess, FLAGS.checkpoint_dir + "/my_model.cpkt")
         print("Evaluating model")
         cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
         x_test, y_test = cifar10.test.images, cifar10.test.labels
