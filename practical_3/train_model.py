@@ -299,8 +299,7 @@ def feature_extraction():
         print("Evaluating model")
         cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
         x_test, y_test = cifar10.test.images, cifar10.test.labels
-        print(x_test.shape)
-        print(y_test.shape)
+        
         l, acc, flatten, fcl1 ,fcl2, logits = sess.run([loss, accuracy,
                                         Convnn.flatten,
                                         Convnn.fcl1,
@@ -321,18 +320,20 @@ def feature_extraction():
 
 def _tnse(layer, logits, name):
         
-    print("Calculating TSNE")
-    # normalise data
-    layer[:,0] = layer[:,0] + abs(np.min(layer[:,0]))
-    layer[:,1] = layer[:,1] + abs(np.min(layer[:,1]))
-    layer[:,0] = layer[:,0]/ float(np.max(layer[:,0]))
-    layer[:,1] = layer[:,1]/ float(np.max(layer[:,1]))
-
+    print("Calculating TSNE for layer%s"%name)
+        
     # Create tsne
     tnse = TSNE(n_components=2, init='pca', random_state=0)
     # Calculate pca
     pca = tnse.fit_transform(layer)
     # Get predictions
+    # Normalise
+    pca[:,0] = pca[:,0] + abs(np.min(pca[:,0]))
+    pca[:,1] = pca[:,1] + abs(np.min(pca[:,1]))
+    pca[:,0] = pca[:,0]/ float(np.max(pca[:,0]))
+    pca[:,1] = pca[:,1]/ float(np.max(pca[:,1]))
+
+
     prediction = np.argmax(logits, axis=1)
     print("Creating figure")
     
@@ -342,10 +343,11 @@ def _tnse(layer, logits, name):
     for i in range(len(classes)):
         class_points = pca[prediction == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
+    plt.axis([0,1,0,1])
     plt.legend(tuple(classes))
     print("Saved image to images/%s"%name)
     plt.savefig('images/%s'%name)
-
+    plt.close()
 def initialize_folders():
     """
     Initializes all folders in FLAGS variable.

@@ -14,8 +14,6 @@ Tensor("ConvNet/conv1/pool1:0", shape=(?, 16, 16, 64), dtype=float32)
 Tensor("ConvNet/conv2/pool2:0", shape=(?, 8, 8, 64), dtype=float32)
 loading previous session
 Evaluating model
-(10000, 32, 32, 3)
-(10000, 10)
 Calculating TSNE
 Calculating TSNE
 Creating figure
