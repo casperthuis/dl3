@@ -311,21 +311,22 @@ def feature_extraction():
 
 
         print("Calculating TSNE")
-        tnse = TSNE(n_components=2, init='pca', random_state=0)
-        pca = tnse.fit_transform(fcl2)
-        prediction = np.argmax(logits, axis=1)
-        fig = plt.figure()
+        _tnse(fcl2, logits, "tnse_fcl2.png") 
+        #tnse = TSNE(n_components=2, init='pca', random_state=0)
+        #pca = tnse.fit_transform(fcl2)
+        #prediction = np.argmax(logits, axis=1)
+        #fig = plt.figure()
         
              
       
-        classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+        #classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
         #for i in range(Convnn.n_classes):
         #    class_points = pca[prediction == i]
         #    plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
         
-        plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
-        plt.legend(tuple(classes))
-        plt.savefig('images/tsne_plot.png')
+        #plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
+        #plt.legend(tuple(classes))
+        #plt.savefig('images/tsne_plot.png')
         
 
         #for label in range(Convnn.n_classes):
@@ -359,10 +360,9 @@ def _tnse(layer, logits, name):
 
     fig = plt.figure()
     classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
-    #for i in range(Convnn.n_classes):
-    #    class_points = pca[prediction == i]
-    #    plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
-    plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
+    for i in range(len(classes)):
+        class_points = pca[prediction == i]
+        plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.legend(tuple(classes))
     plt.savefig('images/%s'%name)
 

@@ -17,4 +17,6 @@ Evaluating model
 (10000, 32, 32, 3)
 (10000, 10)
 Calculating TSNE
+Calculating TSNE
+Creating figure
 Total run time0
