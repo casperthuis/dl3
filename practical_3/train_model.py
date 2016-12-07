@@ -321,8 +321,8 @@ def feature_extraction():
         classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
         #for i in range(Convnn.n_classes):
         #    class_points = pca[prediction == i]
-        #    plot = plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
-        #    plots.append(plot)
+        #    plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
+        
         plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
         plt.legend(tuple(classes))
         plt.savefig('images/tsne_plot.png')
@@ -338,6 +338,33 @@ def feature_extraction():
     ########################
     # END OF YOUR CODE    #
     ########################
+
+def _tnse(layer, logits, name):
+        
+    print("Calculating TSNE")
+    # normalise data
+    layer[:,0] = layer[:,0] + abs(np.min(layer[:,0]))
+    layer[:,1] = layer[:,1] + abs(np.min(layer[:,1]))
+    layer[:,0] = layer[:,0]/np.max(layer[:,0])
+    layer[:,1] = layer[:,1]/np.max(layer[:,1])
+
+    # Create tsne
+    tnse = TSNE(n_components=2, init='pca', random_state=0)
+    # Calculate pca
+    pca = tnse.fit_transform(layer)
+    # Get predictions
+    prediction = np.argmax(logits, axis=1)
+    print("Creating figure")
+    
+
+    fig = plt.figure()
+    classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+    #for i in range(Convnn.n_classes):
+    #    class_points = pca[prediction == i]
+    #    plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
+    plt.scatter(pca[:,0], pca[:,1], c=prediction, alpha=0.4)
+    plt.legend(tuple(classes))
+    plt.savefig('images/%s'%name)
 
 def initialize_folders():
     """
