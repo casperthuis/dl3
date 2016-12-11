@@ -4,7 +4,9 @@ from __future__ import print_function
 
 import tensorflow as tf
 import numpy as np
-
+from tensorflow.contrib.layers import initializers
+from tensorflow.contrib.layers import regularizers
+from tensorflow.contrib.layers import flatten
 
 
 class Siamese(object):
@@ -16,7 +18,7 @@ class Siamese(object):
     input tensors and a label in general.
     """
 
-    def inference(self, x, reuse = False):
+    def inference(self, x, reuse=False):
         """
         Defines the model used for inference. Output of this model is fed to the
         objective (or loss) function defined for the task.
@@ -41,16 +43,17 @@ class Siamese(object):
 
         https://www.tensorflow.org/versions/r0.11/how_tos/variable_scope/index.html
         """
-        with tf.variable_scope('ConvNet') as conv_scope:
+        with tf.variable_scope('ConvNet', reuse=reuse) as conv_scope:
             ########################
             # PUT YOUR CODE HERE  #
             ########################
-            conv1 = self._conv_layer(x, [5, 5, 3, 64], 1, reuse=reuse)
-            conv2 = self._conv_layer(conv1, [5, 5, 64, 64], 2, reuse=reuse)
-            flatten_input = tf.reshape(conv2, [-1, 64 * 8 * 8], reuse=reuse)
-            fcl1 = self._fcl_layer(flatten_input, [flatten_input.get_shape()[1].value, 384], 1, reuse=reuse)
-            l2_out = self._fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2, last_layer=True, reuse=reuse)
-
+            conv1 = self._conv_layer(x, [5, 5, 3, 64], 1)
+            conv2 = self._conv_layer(conv1, [5, 5, 64, 64], 2)
+            flatten_input = tf.reshape(conv2, [-1, 64 * 8 * 8])
+            fcl1 = self._fcl_layer(flatten_input, [flatten_input.get_shape()[1].value, 384], 1)
+            fcl2 = self._fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
+            with tf.name_scope("l2norm") as scope:
+                l2_out = tf.nn.l2_normalize(fcl2, 0, name=scope)
             ########################
             # END OF YOUR CODE    #
             ########################
@@ -87,51 +90,67 @@ class Siamese(object):
         ########################
         # PUT YOUR CODE HERE  #
         ########################
-        raise NotImplementedError
+        d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
+        d_sqrt = tf.sqrt(d)
+        right_part = tf.mul((1 - label), tf.maximum(0., margin - d_sqrt))
+        left_part = tf.mul(label, d_sqrt)
+        contrastive_loss = tf.reduce_mean(tf.add(right_part, left_part))
+        reg_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
+        full_loss = contrastive_loss + reg_loss
+        tf.scalar_summary("cross_entropy", contrastive_loss)
+        tf.scalar_summary("reg_loss", reg_loss)
+        tf.scalar_summary("full_loss", full_loss)
         ########################
         # END OF YOUR CODE    #
         ########################
 
-        return loss
+        return full_loss
 
 
-    def _conv_layer(self, out_p, w_dims, n_layer, reuse):
-        with tf.name_scope('conv%i' % n_layer):
+    def _conv_layer(self, out_p, w_dims, n_layer):
+        conv_stride = [1, 1, 1, 1]
+        maxp_shape = [1, 3, 3, 1]
+        maxp_stride = [1, 2, 2, 1]
+
+        weight_init = tf.random_normal_initializer(stddev=0.001)
+        bias_init = tf.constant_initializer(0.0)
+
+        # TUNING MODEL:
+        weight_reg = regularizers.l2_regularizer(0.0)
+
+
+        with tf.name_scope('Conv%i' % n_layer) as scope:
             # Create weights
-            weights = tf.get_variable(name="conv%i/weights" % n_layer,
+
+            weights = tf.get_variable(name='Conv%i/' % n_layer+"weigths",
                                       shape=w_dims,
-                                      initializer=self.conv_initialiser)
+                                      initializer=weight_init)
 
             # Create bias
-            bias = tf.get_variable(name='conv%i/bias' % n_layer,
+            bias = tf.get_variable(name='Conv%i/' % n_layer+"bias",
                                    shape=w_dims[-1],
-                                   initializer=tf.constant_initializer(0.0))
+                                   initializer=bias_init)
 
             # Create input by applying convoltion with the weights on the input
-            conv_in = tf.nn.conv2d(out_p, weights, [1, 1, 1, 1], padding='SAME')
+            conv_in = tf.nn.conv2d(out_p, weights,
+                                   conv_stride,
+                                   padding='SAME',
+                                   name= scope+"conv")
 
             # Add bias and caculate activation
-            relu = tf.nn.relu(tf.nn.bias_add(conv_in, bias))
+            relu = tf.nn.relu(tf.nn.bias_add(conv_in, bias),
+                              name=scope+"relu")
 
             # Apply max pooling
             out = tf.nn.max_pool(relu,
-                                 ksize=[1, 3, 3, 1],
-                                 strides=[1, 2, 2, 1],
+                                 ksize=maxp_shape,
+                                 strides=maxp_stride,
                                  padding='SAME',
-                                 name='pool%i' % n_layer)
+                                 name=scope+"pool")
 
-            # add summary
-            if self.summary:
-                pass
-                # tf.histogram_summary("conv%i/out" %n_layer, out)
-                # tf.histogram_summary("conv%i/relu" %n_layer, relu)
-                # tf.histogram_summary("conv%i/in" %n_layer, conv_in)
-                # tf.histogram_summary("conv%i/weights"% n_layer, weights)
-                # tf.histogram_summary("conv%i/bias"% n_layer, bias)
+        return out
 
-            return out
-
-    def _fcl_layer(self, out_p, w_dims, n_layer, last_layer=False, reuse=False):
+    def _fcl_layer(self, out_p, w_dims, n_layer):
 
         """
         Adds a fully connected layer to the graph,
@@ -139,35 +158,39 @@ class Siamese(object):
                 w_dims: a vector of ints containing weight dims
 
                 n_layer: an int containing the number of the layer
+
+        return:
+                fcl_out: the output of the fully connected layer
         """
-        with tf.name_scope('fcl%i' % n_layer):
+
+        weight_init = tf.random_normal_initializer(stddev=0.001)
+        bias_init = tf.constant_initializer(0.)
+
+        # TUNING MODEL:
+        weight_reg = regularizers.l2_regularizer(0.001)
+        dropout_rate = 0.0
+
+        with tf.name_scope('fcl%i' % n_layer) as scope:
             # Creates weights
             weights = tf.get_variable(
                 shape=w_dims,
-                initializer=self.fcl_initialiser,
-                name="fcl%i/weights" % n_layer)
-
+                initializer=weight_init,
+                regularizer=weight_reg,
+                name= 'fcl%i/' % n_layer+"weights")
 
             # Create bias
             bias = tf.get_variable(
                 shape=w_dims[-1],
-                initializer=tf.constant_initializer(0.0),
-                name="fcl%i/bias" % n_layer)
+                initializer=bias_init,
+                name= 'fcl%i/' % n_layer+ "bias")
 
             # Calculate input
+            fcl_in = tf.nn.bias_add(tf.matmul(out_p, weights), bias, name=scope+"input")
+            fcl_out = tf.nn.relu(fcl_in, name=scope+"output")
 
-            fcl_out = tf.nn.bias_add(tf.matmul(out_p, weights), bias)
-            fcl_out = tf.nn.relu(fcl_out, name="fcl%i" % n_layer)
             # Calculate activation
-            if last_layer:
-               fcl = tf.nn.l2_normalize(fcl_out, dim=0)
+            #fcl_out = tf.nn.dropout(fcl_out, 1 - dropout_rate)
 
-            # Summaries
-            if self.summary:
-                pass
-                # tf.histogram_summary("fcl%i/out" %n_layer, fcl_out)
-                # tf.histogram_summary("fcl%i/weights"% n_layer, weights)
-                # tf.histogram_summary("fcl%i/bias"% n_layer, bias)
 
-            return fcl_out
+        return fcl_out
 

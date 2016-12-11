@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -n 1
+#SBATCH -p gpu
+#SBATCH -t 01:00:00
+#SBATCH -o optimizer2.output
+#SBATCH -e optimizer2.error
+
+module load python/2.7.11
+module load cuda/7.5.18
+module load cudnn/7.5-v5
+
+python train_model.py --reg_strength 0.001

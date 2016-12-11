@@ -1,0 +1,33 @@
+========== tsne_fcl2 ===========
+SVM predicts for plane a accuracy 0.504000
+SVM predicts for car a accuracy 0.497000
+SVM predicts for bird a accuracy 0.500500
+SVM predicts for cat a accuracy 0.511500
+SVM predicts for deer a accuracy 0.492500
+SVM predicts for dog a accuracy 0.506000
+SVM predicts for frog a accuracy 0.500500
+SVM predicts for horse a accuracy 0.495500
+SVM predicts for ship a accuracy 0.502000
+SVM predicts for truck a accuracy 0.493000
+========== tsne_fcl1 ===========
+SVM predicts for plane a accuracy 0.495000
+SVM predicts for car a accuracy 0.491000
+SVM predicts for bird a accuracy 0.496500
+SVM predicts for cat a accuracy 0.511000
+SVM predicts for deer a accuracy 0.514500
+SVM predicts for dog a accuracy 0.503000
+SVM predicts for frog a accuracy 0.498500
+SVM predicts for horse a accuracy 0.506000
+SVM predicts for ship a accuracy 0.488500
+SVM predicts for truck a accuracy 0.505500
+========== tsne_flatten ===========
+SVM predicts for plane a accuracy 0.489000
+SVM predicts for car a accuracy 0.493000
+SVM predicts for bird a accuracy 0.512500
+SVM predicts for cat a accuracy 0.503500
+SVM predicts for deer a accuracy 0.521500
+SVM predicts for dog a accuracy 0.500500
+SVM predicts for frog a accuracy 0.508000
+SVM predicts for horse a accuracy 0.503000
+SVM predicts for ship a accuracy 0.488000
+SVM predicts for truck a accuracy 0.496500

@@ -156,10 +156,15 @@ def create_dataset(source='Train', num_tuples = 500, batch_size = 128, fraction_
     ########################
     # PUT YOUR CODE HERE  #
     ########################
-    dataobj = DataSet()
+    cifar10 = get_cifar10()
+    if source == "Train":
+      dataset = DataSet(cifar10.train.images, cifar10.train.labels)
+    elif source == "Test":
+      dataset = DataSet(cifar10.test.images, cifar10.test.labels)
+
     dset = []
     for i in range(num_tuples):
-      dset.append(dataobj.next_batch(batch_size, fraction_same))
+      dset.append(dataset.next_batch(batch_size, fraction_same))
 
     ########################
     # END OF YOUR CODE    #

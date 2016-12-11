@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH -n 1
+#SBATCH -p gpu
+#SBATCH -t 00:80:00
+#SBATCH -o siam.output
+#SBATCH -e siam.error
+
+module load python/2.7.11
+module load cuda/7.5.18
+module load cudnn/7.5-v5
+
+python train_model.py --train_model 'siamese' --eval_freq 3000

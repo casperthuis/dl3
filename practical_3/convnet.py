@@ -24,14 +24,15 @@ class ConvNet(object):
                           output dimensions of the ConvNet.
         """
         self.n_classes = n_classes
-        self.weight_reg_strength = 0.000
-        self.fcl_initialiser = initializers.xavier_initializer()
-        self.conv_initialiser = initializers.xavier_initializer_conv2d()
+        self.fcl_initialiser = tf.random_normal_initializer(stddev=0.001)
+        #self.conv_initialiser = initializers.xavier_initializer_conv2d()
         self.summary = False
         self.flatten = None
         self.fcl1 = None
         self.fcl2 = None
         self.logits = None
+        self.dropout_rate = tf.placeholder("float", name="drop_out")
+        self.weight_reg_strength = tf.placeholder("float")
 
     def inference(self, x):
         """
@@ -160,8 +161,7 @@ class ConvNet(object):
         # Create weights
             weights = tf.get_variable(name="conv%i/weights" %n_layer,
                                     shape= w_dims,
-                                    initializer= self.conv_initialiser,
-                                    regularizer = regularizers.l2_regularizer(self.weight_reg_strength))
+                                    initializer= self.fcl_initialiser)
                 
             # Create bias
             bias = tf.get_variable(	name='conv%i/bias' %n_layer,
@@ -175,12 +175,11 @@ class ConvNet(object):
             relu = tf.nn.relu(tf.nn.bias_add(conv_in, bias))
                 
             # Apply max pooling
-            out = tf.nn.max_pool(	relu,
+            out = tf.nn.max_pool(relu,
                                   ksize= [1, 3, 3, 1],
                                   strides=[1, 2, 2, 1],
                                   padding='SAME',
                                   name='pool%i'%n_layer)
-            print(out)
             # add summary
             if self.summary:
               pass
@@ -216,11 +215,11 @@ class ConvNet(object):
             # Calculate input
             
             fcl_out = tf.nn.bias_add(tf.matmul(out_p, weights), bias)
-            
+
             # Calculate activation
             if not last_layer:
                 fcl_out = tf.nn.relu(fcl_out, name="fcl%i"%n_layer)
-
+                fcl_out = tf.nn.dropout(fcl_out, (1.0 -  self.dropout_rate ))
             # Summaries
             if self.summary: 
                 pass

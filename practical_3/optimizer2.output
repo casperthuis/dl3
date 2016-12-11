@@ -1,0 +1,51 @@
+dropout_rate : 0.0
+is_train : True
+data_dir : ./cifar10/cifar-10-batches-py
+eval_freq : 1000
+learning_rate : 0.0001
+print_freq : 10
+batch_size : 128
+summary : False
+checkpoint_dir : ./checkpoints
+reg_strength : 0.001
+log_dir : ./logs/cifar10
+train_model : linear
+checkpoint_freq : 5000
+batch_normal : False
+max_steps : 15000
+saver : False
+Tensor("ConvNet/conv1/pool1:0", shape=(?, 16, 16, 64), dtype=float32)
+Tensor("ConvNet/conv2/pool2:0", shape=(?, 8, 8, 64), dtype=float32)
+Iteration 1/15000. Train Loss = 2.303, Train Accuracy = 0.070
+Iteration 1/15000. Validation Loss = 2.303, Validation Accuracy = 0.100
+Iteration 1000/15000. Train Loss = 1.460, Train Accuracy = 0.469
+Iteration 1000/15000. Validation Loss = 1.313, Validation Accuracy = 0.523
+Iteration 2000/15000. Train Loss = 1.007, Train Accuracy = 0.680
+Iteration 2000/15000. Validation Loss = 1.034, Validation Accuracy = 0.645
+Iteration 3000/15000. Train Loss = 0.838, Train Accuracy = 0.688
+Iteration 3000/15000. Validation Loss = 0.910, Validation Accuracy = 0.699
+Iteration 4000/15000. Train Loss = 0.644, Train Accuracy = 0.789
+Iteration 4000/15000. Validation Loss = 0.819, Validation Accuracy = 0.738
+Iteration 5000/15000. Train Loss = 0.537, Train Accuracy = 0.820
+Iteration 5000/15000. Validation Loss = 0.781, Validation Accuracy = 0.758
+Iteration 6000/15000. Train Loss = 0.500, Train Accuracy = 0.836
+Iteration 6000/15000. Validation Loss = 0.823, Validation Accuracy = 0.764
+Iteration 7000/15000. Train Loss = 0.434, Train Accuracy = 0.867
+Iteration 7000/15000. Validation Loss = 0.918, Validation Accuracy = 0.760
+Iteration 8000/15000. Train Loss = 0.277, Train Accuracy = 0.906
+Iteration 8000/15000. Validation Loss = 1.046, Validation Accuracy = 0.759
+Iteration 9000/15000. Train Loss = 0.140, Train Accuracy = 0.984
+Iteration 9000/15000. Validation Loss = 1.164, Validation Accuracy = 0.757
+Iteration 10000/15000. Train Loss = 0.168, Train Accuracy = 0.969
+Iteration 10000/15000. Validation Loss = 1.357, Validation Accuracy = 0.759
+Iteration 11000/15000. Train Loss = 0.194, Train Accuracy = 0.984
+Iteration 11000/15000. Validation Loss = 1.455, Validation Accuracy = 0.758
+Iteration 12000/15000. Train Loss = 0.128, Train Accuracy = 0.992
+Iteration 12000/15000. Validation Loss = 1.493, Validation Accuracy = 0.750
+Iteration 13000/15000. Train Loss = 0.088, Train Accuracy = 1.000
+Iteration 13000/15000. Validation Loss = 1.612, Validation Accuracy = 0.754
+Iteration 14000/15000. Train Loss = 0.106, Train Accuracy = 0.992
+Iteration 14000/15000. Validation Loss = 1.615, Validation Accuracy = 0.764
+Iteration 15000/15000. Train Loss = 0.115, Train Accuracy = 0.984
+Iteration 15000/15000. Validation Loss = 1.680, Validation Accuracy = 0.757
+Total run time577 seconds: 

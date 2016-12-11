@@ -1,28 +1,19 @@
+dropout_rate : 0.0
 is_train : 0
 data_dir : ./cifar10/cifar-10-batches-py
 eval_freq : 1000
 learning_rate : 0.0001
 print_freq : 10
 batch_size : 128
+summary : 0
 checkpoint_dir : ./checkpoints
+reg_strength : 0.0
 log_dir : ./logs/cifar10
 train_model : linear
 checkpoint_freq : 5000
+batch_normal : 0
 max_steps : 15000
+saver : 0
 Creating model
-Tensor("ConvNet/conv1/pool1:0", shape=(?, 16, 16, 64), dtype=float32)
-Tensor("ConvNet/conv2/pool2:0", shape=(?, 8, 8, 64), dtype=float32)
 loading previous session
 Evaluating model
-accuracy0.706700
-Calculating TSNE
-Calculating TSNE for layertnse_fcl2.png
-Creating figure
-Saved image to images/tnse_fcl2.png
-Calculating TSNE for layertnse_fcl1.png
-Creating figure
-Saved image to images/tnse_fcl1.png
-Calculating TSNE for layertnse_flatten.png
-Creating figure
-Saved image to images/tnse_flatten.png
-Total run time18

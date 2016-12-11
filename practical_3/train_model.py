@@ -10,11 +10,12 @@ import tensorflow as tf
 import numpy as np
 import cifar10_utils
 import siamese
-from cifar10_siamese_utils import get_cifar10 as get_cifar_10_siamese
+import cifar10_siamese_utils
 from sklearn.manifold import TSNE
 from cifar10_siamese_utils import create_dataset
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt 
@@ -26,11 +27,18 @@ EVAL_FREQ_DEFAULT = 1000
 CHECKPOINT_FREQ_DEFAULT = 5000
 PRINT_FREQ_DEFAULT = 10
 OPTIMIZER_DEFAULT = 'ADAM'
-SUMMARY_DEFAULT = False 
-SAVER_DEFAULT = True
 DATA_DIR_DEFAULT = './cifar10/cifar-10-batches-py'
 LOG_DIR_DEFAULT = './logs/cifar10'
 CHECKPOINT_DIR_DEFAULT = './checkpoints'
+
+# CUSTOM DEFAULTS
+SUMMARY_DEFAULT = 0
+SAVER_DEFAULT = 0
+REG_STRENGTH_DEFAULT = 0.0
+DROPOUT_RATE_DEFAULT = 0.0
+BATCH_NORM_DEFAULT = 0
+
+
 
 def train_step(loss):
     """
@@ -48,6 +56,7 @@ def train_step(loss):
     # PUT YOUR CODE HERE  #
     ########################
     optimizer = tf.train.AdamOptimizer
+
     train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss) 
     ########################
     # END OF YOUR CODE    #
@@ -94,7 +103,7 @@ def train():
     # PUT YOUR CODE HERE  #
     ########################
     Convnn = convnet.ConvNet()
-    Convnn.summary = SUMMARY_DEFAULT
+    Convnn.summary = FLAGS.summary
     with tf.name_scope('x'):
         x = tf.placeholder("float", [None, 32,32, 3], name="X_train")
     with tf.name_scope('y'):
@@ -104,58 +113,64 @@ def train():
     logits = Convnn.inference(x)
 
     loss = Convnn.loss(logits, y)
-    accuracy = Convnn.accuracy(logits,y)
+    accuracy = Convnn.accuracy(logits, y)
     optimizer = train_step(loss)
 
     init = tf.initialize_all_variables()
-    if SUMMARY_DEFAULT:    
+    if FLAGS.summary:
         merge = tf.merge_all_summaries()
 
-    if SAVER_DEFAULT:
+    if FLAGS.saver:
         saver = tf.train.Saver()
+
 
     with tf.Session() as sess:
         sess.run(init)
         cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
         x_test, y_test = cifar10.test.images, cifar10.test.labels
-        
-        if SUMMARY_DEFAULT:
-            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/train", sess.graph)
-            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/test")
+
+        if FLAGS.summary:
+            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn_train", sess.graph)
+            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
 
-            _, l_train, acc_train= sess.run([optimizer, loss, accuracy],
-                                            feed_dict={x: x_train, y: y_train})
-            
-            if SUMMARY_DEFAULT:
+            if FLAGS.summary:
                 _, l_train, acc_train, summary = sess.run([optimizer, loss, accuracy, merge],
-                                            feed_dict={x: x_train, y: y_train})
+                                            feed_dict={x: x_train,
+                                                       y: y_train,
+                                                       Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                       Convnn.dropout_rate: FLAGS.dropout_rate})
                 train_writer.add_summary(summary, i)
             else:
                 _, l_train, acc_train = sess.run([optimizer, loss, accuracy],
-                                            feed_dict={x: x_train, y: y_train})
+                                            feed_dict={x: x_train, y: y_train,
+                                                       Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                       Convnn.dropout_rate: FLAGS.dropout_rate})
  
 
-            if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
+            if i % FLAGS.eval_freq == 0 or i == 1:
                 print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}, Train Accuracy = {3:.3f}".format(
                     i, FLAGS.max_steps, l_train, acc_train))
-                if SUMMARY_DEFAULT:
-                    l_val, acc_val, summary = sess.run([loss, accuracy, merge], 
-                                          feed_dict={ x: x_test, y: y_test})
-                
+                if FLAGS.summary:
+                    l_val, acc_val, summary = sess.run([loss, accuracy, merge],
+                                          feed_dict={ x: x_test, y: y_test,
+                                                      Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                      Convnn.dropout_rate: 0.0})
+
                     test_writer.add_summary(summary, i)
 
                 else:
-                    l_val, acc_val = sess.run([loss, accuracy], 
-                                          feed_dict={ x: x_test, y: y_test})
+                    l_val, acc_val = sess.run([loss, accuracy],
+                                          feed_dict={ x: x_test, y: y_test,
+                                                      Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                      Convnn.dropout_rate: 0.0})
 
 
                 print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}, Validation Accuracy = {3:.3f}".format(
                     i, FLAGS.max_steps, l_val, acc_val))
-        if SAVER_DEFAULT:
-
+        if FLAGS.saver:
             saver.save(sess, FLAGS.checkpoint_dir + '/convnet.ckpt')
     ########################
     # END OF YOUR CODE    #
@@ -199,49 +214,63 @@ def train_siamese():
     # Set the random seeds for reproducibility. DO NOT CHANGE.
     tf.set_random_seed(42)
     np.random.seed(42)
-    cifar10 = get_cifar_10_siamese('cifar10/cifar-10-batches-py')
 
-    # x, y = cifar10.test.images, cifar10.test.labels
-    # val_set = create_dataset([x,y], 100, FLAGS.batch_size, 0.1)
-
-
-    Siamese = siamese()
+    # test = cifar10_siamese_utils.create_dataset()
 
     with tf.name_scope('x'):
         x1 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
         x2 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
     with tf.name_scope('y'):
-        y = tf.placeholder("float", [None, 1], name="Y_train")
+        y = tf.placeholder("float", [None], name="Y_train")
 
-
-    logits = Siamese.inference(x1, )
-    loss = Siamese.loss(logits, y)
+    s = siamese.Siamese()
+    channel1 = s.inference(x1)
+    channel2 = s.inference(x2, reuse=True)
+    loss = s.loss(channel1, channel2, y, 0.2)
     optimizer = train_step(loss)
     init = tf.initialize_all_variables()
 
+    merge = tf.merge_all_summaries()
+    saver = tf.train.Saver()
+
     with tf.Session() as sess:
         sess.run(init)
-        cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
-        x_test, y_test = cifar10.test.images, cifar10.test.labels
 
+        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples = 1, batch_size = FLAGS.batch_size, fraction_same = 0.2)
+        x1_test = dset_test[0][0]
+        x2_test = dset_test[0][1]
+        y_test = dset_test[0][2]
 
-        for i in range(1, FLAGS.max_steps + 1):
-            x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
+        dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
+                                                         fraction_same=0.2)
 
+        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
+        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
 
-            _, l_train = sess.run([optimizer, loss],
-                                                 feed_dict={x: x_train, y: y_train})
+        for i in range(0, FLAGS.max_steps):
+            x1_train = dset_train[i][0]
+            x2_train = dset_train[i][1]
+            y_train = dset_train[i][2]
+            feed_dict = {x1: x1_train, x2: x2_train, y: y_train}
+
+            _, l_train, summary = sess.run([optimizer, loss, merge], feed_dict=feed_dict)
+
+            train_writer.add_summary(summary, i)
 
             if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
-                print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}, Train Accuracy = {3:.3f}".format(
-                    i, FLAGS.max_steps, l_train, acc_train))
-                l_val, acc_val = sess.run([loss, accuracy],
-                                              feed_dict={x: x_test, y: y_test})
 
-                print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}, Validation Accuracy = {3:.3f}".format(
-                    i, FLAGS.max_steps, l_val, acc_val))
+                print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
+                    i, FLAGS.max_steps, l_train))
+                feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
 
-        ########################
+                l_val, summary = sess.run([loss, merge], feed_dict=feed_dict)
+                test_writer.add_summary(summary, i)
+
+                print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
+                    i, FLAGS.max_steps, l_val))
+
+        saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
+    ########################
     # PUT YOUR CODE HERE  #
     ########################
 
@@ -298,35 +327,43 @@ def feature_extraction():
         #saver.restore(sess, FLAGS.checkpoint_dir + "/my_model.cpkt")
         print("Evaluating model")
         cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
-        x_test, y_test = cifar10.test.images, cifar10.test.labels
-        
-        l, acc, flatten, fcl1 ,fcl2, logits = sess.run([loss, accuracy,
+        x_test, y_test = cifar10.test.images, cifar10.tes.labels
+        # x_test = x_test[0:1000,:,:,:]
+        # y_test = y_test[0:1000]
+
+        l, acc, flatten, fcl1 ,fcl2 = sess.run([loss, accuracy,
                                         Convnn.flatten,
                                         Convnn.fcl1,
-                                        Convnn.fcl2,
-                                        Convnn.logits ],
-                                        feed_dict={x:x_test, y:y_test}) 
-                                        #feed_dict={x: x_test[0:1000,:,:,:], y: y_test[0:1000]})
+                                        Convnn.fcl2],
+                                        feed_dict={x:x_test, y:y_test,
+                                                   Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                   Convnn.dropout_rate: FLAGS.dropout_rate
+                                                   })
 
-        print("accuracy%f"%acc)
+        print("accuracy: %f"%acc)
         print("Calculating TSNE")
-        _tnse(fcl2, logits, "tnse_fcl2.png") 
-        _tnse(fcl1, logits, "tnse_fcl1.png")
-        _tnse(flatten, logits, "tnse_flatten.png")
+
+        pca_fcl2 = _tnse(fcl2, y_test, "tsne_fcl2")
+        pca_fcl1 = _tnse(fcl1, y_test, "tsne_fcl1")
+        pca_flatten = _tnse(flatten, y_test, "tsne_flatten")
+
 
     ########################
     # END OF YOUR CODE    #
     ########################
 
-def _tnse(layer, logits, name):
+
+def _tnse(layer, labels, name):
         
     print("Calculating TSNE for layer%s"%name)
         
     # Create tsne
-    tnse = TSNE(n_components=2, init='pca', random_state=0)
+    #tsne = TSNE(n_components=2, init='pca', random_state=42)
+    tsne = TSNE(n_components=2, random_state=42)
     # Calculate pca
-    pca = tnse.fit_transform(layer)
+    tsne = tsne.fit_transform(layer)
     # Get predictions
+    pca = tsne
     # Normalise
     pca[:,0] = pca[:,0] + abs(np.min(pca[:,0]))
     pca[:,1] = pca[:,1] + abs(np.min(pca[:,1]))
@@ -334,20 +371,25 @@ def _tnse(layer, logits, name):
     pca[:,1] = pca[:,1]/ float(np.max(pca[:,1]))
 
 
-    prediction = np.argmax(logits, axis=1)
     print("Creating figure")
     # create figure
     fig = plt.figure()
+    labels = np.argmax(labels, axis=1)
+
     classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     for i in range(len(classes)):
-        class_points = pca[prediction == i]
-        plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.3)
+        class_points = pca[labels == i]
+        plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.axis([0,1,0,1])
     plt.legend(tuple(classes))
-    print("Saved image to images/%s"%name)
-    plt.savefig('images/%s'%name)
+    print("Saved image to images/%s.png" %(name))
+    plt.savefig('images/%s.png'%name)
+    tsne.dump("tsne_data/%s_pca.dat"%name)
+    labels.dump("tsne_data/%s_labels.dat" % name)
+    print("Data dumped in tsne_data/")
     plt.close()
-
+    
+    return tsne
 
 def initialize_folders():
     """
@@ -386,7 +428,7 @@ def main(_):
             raise ValueError("--train_model argument can be linear or siamese")
     else:
         feature_extraction()
-    print("Total run time%i seconds" %((time.time() - start)))
+    print("Total run time %i seconds: " %((time.time() - start)))
 
 
 
@@ -416,6 +458,16 @@ if __name__ == '__main__':
                       help='Training or feature extraction')
     parser.add_argument('--train_model', type = str, default = 'linear',
                       help='Type of model. Possible options: linear and siamese')
+    parser.add_argument('--reg_strength', type = float, default = REG_STRENGTH_DEFAULT,
+                      help='reg strength')
+    parser.add_argument('--dropout_rate', type = float, default = DROPOUT_RATE_DEFAULT,
+                      help='dropout rate')
+    parser.add_argument('--batch_normal', type = int, default = BATCH_NORM_DEFAULT,
+                      help='batch normalisation')
+    parser.add_argument('--summary', type=int, default=SUMMARY_DEFAULT,
+                        help='summary writer')
+    parser.add_argument('--saver', type=int, default=SAVER_DEFAULT,
+                        help='save model')
 
     FLAGS, unparsed = parser.parse_known_args()
 

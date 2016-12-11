@@ -7,6 +7,8 @@ import os
 
 import tensorflow as tf
 import numpy as np
+import vgg
+import convnet
 
 LEARNING_RATE_DEFAULT = 1e-4
 BATCH_SIZE_DEFAULT = 128
@@ -36,7 +38,11 @@ def train_step(loss):
     ########################
     # PUT YOUR CODE HERE  #
     ########################
-    raise NotImplementedError
+    optimizer = tf.train.AdamOptimizer
+
+    train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss)
+
+
     ########################
     # END OF YOUR CODE    #
     ########################
@@ -69,13 +75,104 @@ def train():
     tf.set_random_seed(42)
     np.random.seed(42)
 
+    vvg.load_pretrained_VGG16_pool5
+    Convnn = convnet.ConvNet()
+    Convnn.summary = True
     ########################
     # PUT YOUR CODE HERE  #
     ########################
-    raise NotImplementedError
+    with tf.name_scope('x'):
+        x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+    with tf.name_scope('y'):
+        y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
+
+    pool5, _ = vvg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
+
+    flatten = tf.reshape(conv2, [-1, 64 * 8 * 8])
+    fcl1 = self._fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
+
+    fcl2 = self._fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
+
+    logits = self._fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
+
+    loss = Convnn.loss(logits, y)
+    accuracy = Convnn.accuracy(logits, y)
+    optimizer = train_step(loss)
+
+    init = tf.initialize_all_variables()
+    merge = tf.merge_all_summaries()
+
+    with tf.Session() as sess:
+        sess.run(init)
+
+        cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+        x_test, y_test = cifar10.test.images, cifar10.test.labels
+
+        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg_train", sess.graph)
+        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg_test")
+
+        for i in range(1, FLAGS.max_steps + 1):
+            x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
+
+
+            _, l_train, acc_train, summary = sess.run([optimizer, loss, accuracy, merge],
+                                                      feed_dict={x: x_train,
+                                                                 y: y_train})
+            train_writer.add_summary(summary, i)
+
+            if i % FLAGS.eval_freq == 0 or i == 1:
+                print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}, Train Accuracy = {3:.3f}".format(
+                    i, FLAGS.max_steps, l_train, acc_train))
+
+                l_val, acc_val, summary = sess.run([loss, accuracy, merge],
+                                                       feed_dict={x: x_test, y: y_test,
+                                                                  Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                                  Convnn.dropout_rate: 0.0})
+
+                test_writer.add_summary(summary, i)
+
+
+                print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}, Validation Accuracy = {3:.3f}".format(
+                    i, FLAGS.max_steps, l_val, acc_val))
+
     ########################
     # END OF YOUR CODE    #
     ########################
+
+    def _fcl_layer(self, out_p, w_dims, n_layer, last_layer=False):
+        """
+        Adds a fully connected layer to the graph,
+        Args:   out_p: A tensor float containing the output from the previous layer
+                w_dims: a vector of ints containing weight dims
+				n_layer: an int containing the number of the layer
+        """
+        with tf.name_scope('fcl%i' % n_layer):
+            # Creates weights
+            weights = tf.get_variable(
+                shape=w_dims,
+                initializer=self.fcl_initialiser,
+                regularizer=regularizers.l2_regularizer(self.weight_reg_strength),
+                name="fcl%i/weights" % n_layer)
+
+            # Create bias
+            bias = tf.get_variable(
+                shape=w_dims[-1],
+                initializer=tf.constant_initializer(0.0),
+                name="fcl%i/bias" % n_layer)
+
+            # Calculate input
+
+            fcl_out = tf.nn.bias_add(tf.matmul(out_p, weights), bias)
+
+            # Calculate activation
+            if not last_layer:
+                fcl_out = tf.nn.relu(fcl_out, name="fcl%i" % n_layer)
+                fcl_out = tf.nn.dropout(fcl_out, (1.0 - self.dropout_rate))
+            # Summaries
+
+
+            return fcl_out
+
 
 def initialize_folders():
     """

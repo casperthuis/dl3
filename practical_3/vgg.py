@@ -273,6 +273,7 @@ def load_pretrained_VGG16_pool5(input, scope_name='vgg'):
                                name='pool5')
         print("pool5.shape: %s" % pool5.get_shape())
 
+
     return pool5, assign_ops
 
 def load_weights(weight_file):
