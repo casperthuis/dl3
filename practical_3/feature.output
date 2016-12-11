@@ -17,3 +17,18 @@ saver : 0
 Creating model
 loading previous session
 Evaluating model
+accuracy: 0.784300
+Calculating TSNE
+Calculating TSNE for layertsne_fcl2
+Creating figure
+Saved image to images/tsne_fcl2.png
+Data dumped in tsne_data/
+Calculating TSNE for layertsne_fcl1
+Creating figure
+Saved image to images/tsne_fcl1.png
+Data dumped in tsne_data/
+Calculating TSNE for layertsne_flatten
+Creating figure
+Saved image to images/tsne_flatten.png
+Data dumped in tsne_data/
+Total run time 1580 seconds: 

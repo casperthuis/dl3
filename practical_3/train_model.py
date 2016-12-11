@@ -304,49 +304,79 @@ def feature_extraction():
     np.random.seed(42)
 
     ########################
-    # PUT YOUR CODE HERE  #
+    # PUT YOUR CODE HERE   #
     ########################
-    print("Creating model")
-    Convnn = convnet.ConvNet()
-    Convnn.summary = SUMMARY_DEFAULT
-    with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
-    with tf.name_scope('y'):
-        y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
+    if FLAGS.train_model == 'linear':
+        print("Creating model")
+        Convnn = convnet.ConvNet()
+        Convnn.summary = FLAGS.summary
+        with tf.name_scope('x'):
+            x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+        with tf.name_scope('y'):
+            y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
-    # initialize graph, accuracy and loss
-    logits = Convnn.inference(x)
-    loss = Convnn.loss(logits, y)
-    accuracy = Convnn.accuracy(logits, y)
+        # initialize graph, accuracy and loss
+        logits = Convnn.inference(x)
+        loss = Convnn.loss(logits, y)
+        accuracy = Convnn.accuracy(logits, y)
 
-    with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
-        saver = tf.train.Saver()
-        print("loading previous session")
-        saver.restore(sess, FLAGS.checkpoint_dir + "/convnet.ckpt")
-        #saver.restore(sess, FLAGS.checkpoint_dir + "/my_model.cpkt")
-        print("Evaluating model")
-        cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
-        x_test, y_test = cifar10.test.images, cifar10.tes.labels
-        # x_test = x_test[0:1000,:,:,:]
-        # y_test = y_test[0:1000]
+        with tf.Session() as sess:
+            sess.run(tf.initialize_all_variables())
+            saver = tf.train.Saver()
+            print("loading previous session")
+            saver.restore(sess, FLAGS.checkpoint_dir + "/convnet.ckpt")
+            #saver.restore(sess, FLAGS.checkpoint_dir + "/my_model.cpkt")
+            print("Evaluating model")
+            cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+            x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-        l, acc, flatten, fcl1 ,fcl2 = sess.run([loss, accuracy,
-                                        Convnn.flatten,
-                                        Convnn.fcl1,
-                                        Convnn.fcl2],
-                                        feed_dict={x:x_test, y:y_test,
-                                                   Convnn.weight_reg_strength: FLAGS.reg_strength,
-                                                   Convnn.dropout_rate: FLAGS.dropout_rate
-                                                   })
 
-        print("accuracy: %f"%acc)
-        print("Calculating TSNE")
+            l, acc, flatten, fcl1 ,fcl2 = sess.run([loss, accuracy,
+                                            Convnn.flatten,
+                                            Convnn.fcl1,
+                                            Convnn.fcl2],
+                                            feed_dict={x:x_test, y:y_test,
+                                                       Convnn.weight_reg_strength: FLAGS.reg_strength,
+                                                       Convnn.dropout_rate: FLAGS.dropout_rate
+                                                       })
 
-        pca_fcl2 = _tnse(fcl2, y_test, "tsne_fcl2")
-        pca_fcl1 = _tnse(fcl1, y_test, "tsne_fcl1")
-        pca_flatten = _tnse(flatten, y_test, "tsne_flatten")
+            print("accuracy: %f"%acc)
+            print("Calculating TSNE")
 
+            _tnse(fcl2, y_test, "tsne_fcl2")
+            _tnse(fcl1, y_test, "tsne_fcl1")
+            _tnse(flatten, y_test, "tsne_flatten")
+    else:
+        with tf.name_scope('x'):
+            x1 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+            x2 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+        with tf.name_scope('y'):
+            y = tf.placeholder("float", [None], name="Y_train")
+
+        s = siamese.Siamese()
+        channel1 = s.inference(x1)
+        channel2 = s.inference(x2, reuse=True)
+        loss = s.loss(channel1, channel2, y, 0.2)
+        optimizer = train_step(loss)
+        init = tf.initialize_all_variables()
+
+
+
+        with tf.Session() as sess:
+            sess.run(init)
+
+            dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=1, batch_size=FLAGS.batch_size,
+                                                             fraction_same=0.2)
+            x1_test = dset_test[0][0]
+            x2_test = dset_test[0][1]
+            y_test = dset_test[0][2]
+
+            feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
+            sess.run([optimizer], feed_dict=feed_dict)
+            # print([n.name for n in tf.get_default_graph().as_graph_def().node])
+            l2norm =  tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm").eval()
+            print(l2norm)
+            #_tnse(flatten, y_test, "tsne_flatten")
 
     ########################
     # END OF YOUR CODE    #
@@ -388,8 +418,7 @@ def _tnse(layer, labels, name):
     labels.dump("tsne_data/%s_labels.dat" % name)
     print("Data dumped in tsne_data/")
     plt.close()
-    
-    return tsne
+
 
 def initialize_folders():
     """
