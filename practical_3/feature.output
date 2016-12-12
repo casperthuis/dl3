@@ -32,3 +32,37 @@ Creating figure
 Saved image to images/tsne_flatten.png
 Data dumped in tsne_data/
 Total run time 1580 seconds: 
+dropout_rate : 0.0
+is_train : 0
+data_dir : ./cifar10/cifar-10-batches-py
+eval_freq : 1000
+learning_rate : 0.0001
+print_freq : 10
+batch_size : 128
+summary : 0
+checkpoint_dir : ./checkpoints
+reg_strength : 0.0
+log_dir : ./logs/cifar10
+train_model : linear
+checkpoint_freq : 5000
+batch_normal : 0
+max_steps : 15000
+saver : 0
+Creating model
+loading previous session
+Evaluating model
+accuracy: 0.784300
+Calculating TSNE
+Calculating TSNE for layertsne_fcl2
+Creating figure
+Saved image to images/tsne_fcl2.png
+Data dumped in tsne_data/
+Calculating TSNE for layertsne_fcl1
+Creating figure
+Saved image to images/tsne_fcl1.png
+Data dumped in tsne_data/
+Calculating TSNE for layertsne_flatten
+Creating figure
+Saved image to images/tsne_flatten.png
+Data dumped in tsne_data/
+Total run time 1652 seconds: 

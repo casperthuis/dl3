@@ -182,7 +182,7 @@ class Siamese(object):
             bias = tf.get_variable(
                 shape=w_dims[-1],
                 initializer=bias_init,
-                name= 'fcl%i/' % n_layer+ "bias")
+                name= 'fcl%i/'% n_layer+ "bias")
 
             # Calculate input
             fcl_in = tf.nn.bias_add(tf.matmul(out_p, weights), bias, name=scope+"input")

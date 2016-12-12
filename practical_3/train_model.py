@@ -339,6 +339,9 @@ def feature_extraction():
                                                        Convnn.weight_reg_strength: FLAGS.reg_strength,
                                                        Convnn.dropout_rate: FLAGS.dropout_rate
                                                        })
+            flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
+            fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
+            fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
 
             print("accuracy: %f"%acc)
             print("Calculating TSNE")
@@ -371,13 +374,20 @@ def feature_extraction():
             x2_test = dset_test[0][1]
             y_test = dset_test[0][2]
 
-            feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
-            sess.run([optimizer], feed_dict=feed_dict)
-            # print([n.name for n in tf.get_default_graph().as_graph_def().node])
-            l2norm =  tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm").eval()
-            print(l2norm)
-            #_tnse(flatten, y_test, "tsne_flatten")
+            feed = {x1: x1_test, x2:x2_test }
+            l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
 
+
+            #_tnse(l2_norm, y_test, "tsne_siamese_l2norm")
+            tsne = TSNE(n_components=2, init='random', random_state=42)
+            # Calculate pca
+            tsne = tsne.fit_transform(l2_norm)
+
+            for i in range(1):
+                class_points = tsne[y_test == i]
+                plt.scatter(class_points[:, 0], class_points[:, 1], color=plt.cm.Set1(i * 125), alpha=0.5)
+
+            plt.savefig('images/tsne_siamese_l2norm')
     ########################
     # END OF YOUR CODE    #
     ########################
@@ -389,7 +399,7 @@ def _tnse(layer, labels, name):
         
     # Create tsne
     #tsne = TSNE(n_components=2, init='pca', random_state=42)
-    tsne = TSNE(n_components=2, random_state=42)
+    tsne = TSNE(n_components=2, init='random', random_state=42)
     # Calculate pca
     tsne = tsne.fit_transform(layer)
     # Get predictions
