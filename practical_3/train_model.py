@@ -130,8 +130,8 @@ def train():
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
         if FLAGS.summary:
-            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn_train", sess.graph)
-            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn_test")
+            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + " convnn_train", sess.graph)
+            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn/convnn_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
@@ -317,8 +317,7 @@ def feature_extraction():
 
         # initialize graph, accuracy and loss
         logits = Convnn.inference(x)
-        loss = Convnn.loss(logits, y)
-        accuracy = Convnn.accuracy(logits, y)
+
 
         with tf.Session() as sess:
             sess.run(tf.initialize_all_variables())
@@ -330,18 +329,11 @@ def feature_extraction():
             cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
             x_test, y_test = cifar10.test.images, cifar10.test.labels
 
+            feed_dict = {x: x_test, y: y_test}
 
-            l, acc, flatten, fcl1 ,fcl2 = sess.run([loss, accuracy,
-                                            Convnn.flatten,
-                                            Convnn.fcl1,
-                                            Convnn.fcl2],
-                                            feed_dict={x:x_test, y:y_test,
-                                                       Convnn.weight_reg_strength: FLAGS.reg_strength,
-                                                       Convnn.dropout_rate: FLAGS.dropout_rate
-                                                       })
-            flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
-            fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
-            fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
+            flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
+            fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
+            fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
 
             print("accuracy: %f"%acc)
             print("Calculating TSNE")
@@ -359,14 +351,15 @@ def feature_extraction():
         s = siamese.Siamese()
         channel1 = s.inference(x1)
         channel2 = s.inference(x2, reuse=True)
-        loss = s.loss(channel1, channel2, y, 0.2)
-        optimizer = train_step(loss)
-        init = tf.initialize_all_variables()
-
 
 
         with tf.Session() as sess:
-            sess.run(init)
+            sess.run(tf.initialize_all_variables())
+            saver = tf.train.Saver()
+            print("loading previous session")
+            saver.restore(sess, FLAGS.checkpoint_dir + "/siamese.ckpt")
+
+            print("Evaluating model")
 
             dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=1, batch_size=FLAGS.batch_size,
                                                              fraction_same=0.2)
@@ -374,7 +367,7 @@ def feature_extraction():
             x2_test = dset_test[0][1]
             y_test = dset_test[0][2]
 
-            feed = {x1: x1_test, x2:x2_test }
+            feed = {x1: x1_test, x2:x2_test}
             l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
 
 
@@ -390,6 +383,8 @@ def feature_extraction():
                 plt.scatter(class_points[:, 0], class_points[:, 1], color=plt.cm.Set1(i * 125), alpha=0.5)
 
             plt.legend(classes)
+            tsne.dump("tsne_data/%s_tsne_siamese.dat" % name)
+            labels.dump("tsne_data/%s_labels_siamese.dat" % name)
             plt.savefig('images/tsne_siamese_l2norm')
     ########################
     # END OF YOUR CODE    #
