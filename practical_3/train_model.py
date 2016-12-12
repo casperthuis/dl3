@@ -383,11 +383,13 @@ def feature_extraction():
             # Calculate pca
             tsne = tsne.fit_transform(l2_norm)
             classes = ['same', 'different']
-            print(classes)
-            for i in range(1):
+
+            for i in range(2):
                 class_points = tsne[y_test == i]
+                print(class_points.shape)
                 plt.scatter(class_points[:, 0], class_points[:, 1], color=plt.cm.Set1(i * 125), alpha=0.5)
 
+            plt.legend(classes)
             plt.savefig('images/tsne_siamese_l2norm')
     ########################
     # END OF YOUR CODE    #
