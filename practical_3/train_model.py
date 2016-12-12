@@ -382,7 +382,8 @@ def feature_extraction():
             tsne = TSNE(n_components=2, init='random', random_state=42)
             # Calculate pca
             tsne = tsne.fit_transform(l2_norm)
-
+            classes = ['same', 'different']
+            print(classes)
             for i in range(1):
                 class_points = tsne[y_test == i]
                 plt.scatter(class_points[:, 0], class_points[:, 1], color=plt.cm.Set1(i * 125), alpha=0.5)
@@ -416,12 +417,12 @@ def _tnse(layer, labels, name):
     fig = plt.figure()
     labels = np.argmax(labels, axis=1)
 
-    classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+    classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
     for i in range(len(classes)):
         class_points = pca[labels == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.axis([0,1,0,1])
-    plt.legend(tuple(classes))
+    plt.legend(classes)
     print("Saved image to images/%s.png" %(name))
     plt.savefig('images/%s.png'%name)
     tsne.dump("tsne_data/%s_pca.dat"%name)
