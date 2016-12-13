@@ -1,1 +1,11 @@
 python: can't open file 'retrain_vgg.job': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "train_model.py", line 492, in <module>
+    tf.app.run()
+  File "/hpc/sw/python-2.7.11/lib/python2.7/site-packages/tensorflow/python/platform/app.py", line 30, in run
+    sys.exit(main(sys.argv))
+  File "train_model.py", line 444, in main
+    train_siamese()
+  File "train_model.py", line 268, in train_siamese
+    test_loss += sess.run([loss], feed_dict=feed_dict)
+TypeError: unsupported operand type(s) for +=: 'int' and 'list'

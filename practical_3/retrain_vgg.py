@@ -9,6 +9,9 @@ import tensorflow as tf
 import numpy as np
 import vgg
 import convnet
+from tensorflow.contrib.layers import initializers
+from tensorflow.contrib.layers import regularizers
+import cifar10_utils
 
 LEARNING_RATE_DEFAULT = 1e-4
 BATCH_SIZE_DEFAULT = 128
@@ -22,6 +25,8 @@ REFINE_AFTER_K_STEPS_DEFAULT = 0
 DATA_DIR_DEFAULT = './cifar10/cifar-10-batches-py'
 LOG_DIR_DEFAULT = './logs/cifar10'
 CHECKPOINT_DIR_DEFAULT = './checkpoints'
+
+
 
 def train_step(loss):
     """
@@ -75,6 +80,7 @@ def train():
     tf.set_random_seed(42)
     np.random.seed(42)
 
+
     Convnn = convnet.ConvNet()
     Convnn.summary = True
     ########################
@@ -87,7 +93,9 @@ def train():
 
     pool5, _ = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
-    flatten = tf.reshape(conv2, [-1, 64 * 8 * 8])
+
+    flatten = tf.reshape(pool5, [-1, 64 * 8 * 8])
+
     fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
 
     fcl2 = fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
@@ -138,39 +146,40 @@ def train():
     # END OF YOUR CODE    #
     ########################
 
-    def fcl_layer(self, out_p, w_dims, n_layer, last_layer=False):
-        """
-        Adds a fully connected layer to the graph,
-        Args:   out_p: A tensor float containing the output from the previous layer
-                w_dims: a vector of ints containing weight dims
-				n_layer: an int containing the number of the layer
-        """
-        with tf.name_scope('fcl%i' % n_layer):
-            # Creates weights
-            weights = tf.get_variable(
-                shape=w_dims,
-                initializer=self.fcl_initialiser,
-                regularizer=regularizers.l2_regularizer(self.weight_reg_strength),
-                name="fcl%i/weights" % n_layer)
-
-            # Create bias
-            bias = tf.get_variable(
-                shape=w_dims[-1],
-                initializer=tf.constant_initializer(0.0),
-                name="fcl%i/bias" % n_layer)
-
-            # Calculate input
-
-            fcl_out = tf.nn.bias_add(tf.matmul(out_p, weights), bias)
-
-            # Calculate activation
-            if not last_layer:
-                fcl_out = tf.nn.relu(fcl_out, name="fcl%i" % n_layer)
-                fcl_out = tf.nn.dropout(fcl_out, (1.0 - self.dropout_rate))
-            # Summaries
 
 
-            return fcl_out
+def fcl_layer(out_p, w_dims, n_layer, last_layer=False):
+    """
+    Adds a fully connected layer to the graph,
+    Args:   out_p: A tensor float containing the output from the previous layer
+            w_dims: a vector of ints containing weight dims
+            n_layer: an int containing the number of the layer
+    """
+    with tf.name_scope('fcl%i' % n_layer):
+        # Creates weights
+        weights = tf.get_variable(
+            shape=w_dims,
+            initializer=tf.random_normal_initializer(stddev=0.001),
+            regularizer=regularizers.l2_regularizer(0.0),
+            name="fcl%i/weights" % n_layer)
+
+        # Create bias
+        bias = tf.get_variable(
+            shape=w_dims[-1],
+            initializer=tf.constant_initializer(0.0),
+            name="fcl%i/bias" % n_layer)
+
+        # Calculate input
+
+        fcl_out = tf.nn.bias_add(tf.matmul(out_p, weights), bias)
+
+        # Calculate activation
+        if not last_layer:
+            fcl_out = tf.nn.relu(fcl_out, name="fcl%i" % n_layer)
+            fcl_out = tf.nn.dropout(fcl_out, (1.0 - 0))
+
+        return fcl_out
+
 
 
 def initialize_folders():
