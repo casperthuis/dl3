@@ -75,7 +75,6 @@ def train():
     tf.set_random_seed(42)
     np.random.seed(42)
 
-    vvg.load_pretrained_VGG16_pool5
     Convnn = convnet.ConvNet()
     Convnn.summary = True
     ########################
@@ -86,14 +85,14 @@ def train():
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
-    pool5, _ = vvg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
+    pool5, _ = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
     flatten = tf.reshape(conv2, [-1, 64 * 8 * 8])
-    fcl1 = self._fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
+    fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
 
-    fcl2 = self._fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
+    fcl2 = fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
 
-    logits = self._fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
+    logits = fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
 
     loss = Convnn.loss(logits, y)
     accuracy = Convnn.accuracy(logits, y)
@@ -139,7 +138,7 @@ def train():
     # END OF YOUR CODE    #
     ########################
 
-    def _fcl_layer(self, out_p, w_dims, n_layer, last_layer=False):
+    def fcl_layer(self, out_p, w_dims, n_layer, last_layer=False):
         """
         Adds a fully connected layer to the graph,
         Args:   out_p: A tensor float containing the output from the previous layer
