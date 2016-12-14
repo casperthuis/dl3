@@ -11,6 +11,7 @@ import numpy as np
 import cifar10_utils
 import siamese
 import cifar10_siamese_utils
+import vgg
 from sklearn.manifold import TSNE
 from cifar10_siamese_utils import create_dataset
 from sklearn.multiclass import OneVsRestClassifier
@@ -37,6 +38,8 @@ SAVER_DEFAULT = 0
 REG_STRENGTH_DEFAULT = 0.0
 DROPOUT_RATE_DEFAULT = 0.0
 BATCH_NORM_DEFAULT = 0
+FRACTION_SAME_DEFAULT = 0.2
+MARGIN_DEFAULT = 0.2
 
 
 
@@ -130,8 +133,8 @@ def train():
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
         if FLAGS.summary:
-            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + " convnn_train", sess.graph)
-            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn/convnn_test")
+            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_train", sess.graph)
+            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
@@ -215,6 +218,8 @@ def train_siamese():
     tf.set_random_seed(42)
     np.random.seed(42)
 
+
+
     # test = cifar10_siamese_utils.create_dataset()
 
     with tf.name_scope('x'):
@@ -226,7 +231,7 @@ def train_siamese():
     s = siamese.Siamese()
     channel1 = s.inference(x1)
     channel2 = s.inference(x2, reuse=True)
-    loss = s.loss(channel1, channel2, y, 0.2)
+    loss = s.loss(channel1, channel2, y, FLAGS.margin)
     optimizer = train_step(loss)
     init = tf.initialize_all_variables()
 
@@ -236,16 +241,12 @@ def train_siamese():
     with tf.Session() as sess:
         sess.run(init)
 
-        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples = 1, batch_size = FLAGS.batch_size, fraction_same = 0.2)
-        x1_test = dset_test[0][0]
-        x2_test = dset_test[0][1]
-        y_test = dset_test[0][2]
-
+        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
-                                                         fraction_same=0.2)
+                                                         fraction_same=FLAGS.fraction_same)
 
         train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
-        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
+        #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
 
         for i in range(0, FLAGS.max_steps):
             x1_train = dset_train[i][0]
@@ -261,13 +262,21 @@ def train_siamese():
 
                 print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
                     i, FLAGS.max_steps, l_train))
-                feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
 
-                l_val, summary = sess.run([loss, merge], feed_dict=feed_dict)
-                test_writer.add_summary(summary, i)
+                test_loss = 0
+                for j in range(len(dset_test)):
+                    x1_test = dset_test[j][0]
+                    x2_test = dset_test[j][1]
+                    y_test = dset_test[j][2]
+                    feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
+                    test_loss += sess.run([loss], feed_dict=feed_dict)[0]
+
+                test_loss = test_loss/len(dset_test)
+
+                #test_writer.add_summary(summary, i)
 
                 print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
-                    i, FLAGS.max_steps, l_val))
+                    i, FLAGS.max_steps, test_loss))
 
         saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
     ########################
@@ -310,13 +319,11 @@ def feature_extraction():
         print("Creating model")
         Convnn = convnet.ConvNet()
         Convnn.summary = FLAGS.summary
-        with tf.name_scope('x'):
-            x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
-        with tf.name_scope('y'):
-            y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
+        x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+
 
         # initialize graph, accuracy and loss
-        logits = Convnn.inference(x)
+        Convnn.inference(x)
 
 
         with tf.Session() as sess:
@@ -329,29 +336,22 @@ def feature_extraction():
             cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
             x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-            feed_dict = {x: x_test, y: y_test}
+            feed_dict = {x: x_test, Convnn.dropout_rate: 0.0}
 
-            flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
-            fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
-            fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
+            flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/Reshape:0").eval(feed_dict)
+            fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/fcl1/relu:0").eval(feed_dict)
+            fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/fcl2/relu:0").eval(feed_dict)
 
-            print("accuracy: %f"%acc)
             print("Calculating TSNE")
 
-            _tnse(fcl2, y_test, "tsne_fcl2")
-            _tnse(fcl1, y_test, "tsne_fcl1")
-            _tnse(flatten, y_test, "tsne_flatten")
+            _tnse(fcl2, y_test, "conv_fcl2")
+            _tnse(fcl1, y_test, "conv_fcl1")
+            _tnse(flatten, y_test, "conv_flatten")
     else:
-        with tf.name_scope('x'):
-            x1 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
-            x2 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
-        with tf.name_scope('y'):
-            y = tf.placeholder("float", [None], name="Y_train")
 
+        x1 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
         s = siamese.Siamese()
-        channel1 = s.inference(x1)
-        channel2 = s.inference(x2, reuse=True)
-
+        s.inference(x1)
 
         with tf.Session() as sess:
             sess.run(tf.initialize_all_variables())
@@ -360,32 +360,15 @@ def feature_extraction():
             saver.restore(sess, FLAGS.checkpoint_dir + "/siamese.ckpt")
 
             print("Evaluating model")
+            cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+            x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-            dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=1, batch_size=FLAGS.batch_size,
-                                                             fraction_same=0.2)
-            x1_test = dset_test[0][0]
-            x2_test = dset_test[0][1]
-            y_test = dset_test[0][2]
+            feed_dict = {x1: x_test}
 
-            feed = {x1: x1_test, x2:x2_test}
-            l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed)
+            l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
 
+            _tnse(l2_norm, y_test, "siamese_fcl2")
 
-            #_tnse(l2_norm, y_test, "tsne_siamese_l2norm")
-            tsne = TSNE(n_components=2, init='random', random_state=42)
-            # Calculate pca
-            tsne = tsne.fit_transform(l2_norm)
-            classes = ['same', 'different']
-
-            for i in range(2):
-                class_points = tsne[y_test == i]
-                print(class_points.shape)
-                plt.scatter(class_points[:, 0], class_points[:, 1], color=plt.cm.Set1(i * 125), alpha=0.5)
-
-            plt.legend(classes)
-            tsne.dump("tsne_data/%s_tsne_siamese.dat" % name)
-            labels.dump("tsne_data/%s_labels_siamese.dat" % name)
-            plt.savefig('images/tsne_siamese_l2norm')
     ########################
     # END OF YOUR CODE    #
     ########################
@@ -401,28 +384,28 @@ def _tnse(layer, labels, name):
     # Calculate pca
     tsne = tsne.fit_transform(layer)
     # Get predictions
-    pca = tsne
+    unnorm = tsne
     # Normalise
-    pca[:,0] = pca[:,0] + abs(np.min(pca[:,0]))
-    pca[:,1] = pca[:,1] + abs(np.min(pca[:,1]))
-    pca[:,0] = pca[:,0]/ float(np.max(pca[:,0]))
-    pca[:,1] = pca[:,1]/ float(np.max(pca[:,1]))
+    tsne[:,0] = tsne[:,0] + abs(np.min(tsne[:,0]))
+    tsne[:,1] = tsne[:,1] + abs(np.min(tsne[:,1]))
+    tsne[:,0] = tsne[:,0]/ float(np.max(tsne[:,0]))
+    tsne[:,1] = tsne[:,1]/ float(np.max(tsne[:,1]))
 
 
     print("Creating figure")
     # create figure
-    fig = plt.figure()
+    plt.figure()
     labels = np.argmax(labels, axis=1)
 
     classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
     for i in range(len(classes)):
-        class_points = pca[labels == i]
+        class_points = tsne[labels == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.axis([0,1,0,1])
     plt.legend(classes)
     print("Saved image to images/%s.png" %(name))
     plt.savefig('images/%s.png'%name)
-    tsne.dump("tsne_data/%s_pca.dat"%name)
+    unnorm.dump("tsne_data/%s_tsne.dat"%name)
     labels.dump("tsne_data/%s_labels.dat" % name)
     print("Data dumped in tsne_data/")
     plt.close()
@@ -505,6 +488,11 @@ if __name__ == '__main__':
                         help='summary writer')
     parser.add_argument('--saver', type=int, default=SAVER_DEFAULT,
                         help='save model')
+    parser.add_argument('--fraction_same', type=float, default=FRACTION_SAME_DEFAULT,
+                        help='fraction same siamese')
+    parser.add_argument('--margin', type=float, default=MARGIN_DEFAULT,
+                        help='margin siamese loss')
+
 
     FLAGS, unparsed = parser.parse_known_args()
 

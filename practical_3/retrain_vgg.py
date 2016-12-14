@@ -87,17 +87,19 @@ def train():
     # PUT YOUR CODE HERE  #
     ########################
     with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+        x = tf.placeholder("float", [None, None, None, 3], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
     pool5, _ = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
-    flatten = tf.reshape(pool5, [-1, 64 * 8 * 8])
+    print(pool5.get_shape()[3])
+    flatten = tf.reshape(pool5, [-1, pool5.get_shape()[3].value])
 
     fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
 
     fcl2 = fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
+
     logits = fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
 
     loss = Convnn.loss(logits, y)
@@ -177,6 +179,7 @@ def fcl_layer(out_p, w_dims, n_layer, last_layer=False):
             fcl_out = tf.nn.dropout(fcl_out, (1.0 - 0))
 
         return fcl_out
+
 
 
 def initialize_folders():

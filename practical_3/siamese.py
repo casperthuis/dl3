@@ -90,10 +90,10 @@ class Siamese(object):
         ########################
         # PUT YOUR CODE HERE  #
         ########################
-        d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
-        d_sqrt = tf.sqrt(d)
-        right_part = tf.mul((1 - label), tf.maximum(0., margin - d_sqrt))
-        left_part = tf.mul(label, d_sqrt)
+        d2 = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
+        #d_sqrt = tf.sqrt(d)
+        right_part = tf.mul((1 - label), tf.maximum(0., margin - d))
+        left_part = tf.mul(label, d)
         contrastive_loss = tf.reduce_mean(tf.add(right_part, left_part))
         reg_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
         full_loss = contrastive_loss + reg_loss
@@ -189,7 +189,7 @@ class Siamese(object):
             fcl_out = tf.nn.relu(fcl_in, name=scope+"output")
 
             # Calculate activation
-            #fcl_out = tf.nn.dropout(fcl_out, 1 - dropout_rate)
+            fcl_out = tf.nn.dropout(fcl_out, 1 - dropout_rate)
 
 
         return fcl_out

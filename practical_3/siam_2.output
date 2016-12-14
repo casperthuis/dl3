@@ -1,0 +1,49 @@
+dropout_rate : 0.0
+is_train : True
+data_dir : ./cifar10/cifar-10-batches-py
+eval_freq : 3000
+learning_rate : 0.0001
+print_freq : 10
+batch_size : 128
+summary : 0
+checkpoint_dir : ./checkpoints
+reg_strength : 0.0
+log_dir : ./logs/cifar10
+train_model : siamese
+checkpoint_freq : 5000
+batch_normal : 0
+max_steps : 15000
+saver : 0
+Iteration 0/15000. Train Loss = 0.187
+Iteration 0/15000. Validation Loss = 0.247
+Iteration 1/15000. Train Loss = 0.238
+Iteration 1/15000. Validation Loss = 0.239
+Iteration 1000/15000. Train Loss = 0.125
+Iteration 1000/15000. Validation Loss = 0.127
+Iteration 2000/15000. Train Loss = 0.114
+Iteration 2000/15000. Validation Loss = 0.117
+Iteration 3000/15000. Train Loss = 0.118
+Iteration 3000/15000. Validation Loss = 0.113
+Iteration 4000/15000. Train Loss = 0.114
+Iteration 4000/15000. Validation Loss = 0.112
+Iteration 5000/15000. Train Loss = 0.108
+Iteration 5000/15000. Validation Loss = 0.111
+Iteration 6000/15000. Train Loss = 0.104
+Iteration 6000/15000. Validation Loss = 0.110
+Iteration 7000/15000. Train Loss = 0.103
+Iteration 7000/15000. Validation Loss = 0.109
+Iteration 8000/15000. Train Loss = 0.113
+Iteration 8000/15000. Validation Loss = 0.110
+Iteration 9000/15000. Train Loss = 0.113
+Iteration 9000/15000. Validation Loss = 0.108
+Iteration 10000/15000. Train Loss = 0.114
+Iteration 10000/15000. Validation Loss = 0.107
+Iteration 11000/15000. Train Loss = 0.109
+Iteration 11000/15000. Validation Loss = 0.107
+Iteration 12000/15000. Train Loss = 0.108
+Iteration 12000/15000. Validation Loss = 0.108
+Iteration 13000/15000. Train Loss = 0.102
+Iteration 13000/15000. Validation Loss = 0.108
+Iteration 14000/15000. Train Loss = 0.101
+Iteration 14000/15000. Validation Loss = 0.105
+Total run time 2834 seconds: 

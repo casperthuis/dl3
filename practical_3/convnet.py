@@ -27,10 +27,6 @@ class ConvNet(object):
         self.fcl_initialiser = tf.random_normal_initializer(stddev=0.001)
         #self.conv_initialiser = initializers.xavier_initializer_conv2d()
         self.summary = False
-        self.flatten = None
-        self.fcl1 = None
-        self.fcl2 = None
-        self.logits = None
         self.dropout_rate = tf.placeholder("float", name="drop_out")
         self.weight_reg_strength = tf.placeholder("float")
 
@@ -69,13 +65,11 @@ class ConvNet(object):
             conv1 = self._conv_layer(x, [5,5,3,64], 1)
             conv2 = self._conv_layer(conv1, [5,5,64,64], 2)
             flatten = tf.reshape(conv2, [-1, 64*8*8])
-            self.flatten = flatten
+
             fcl1 = self._fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
-            self.fcl1 = fcl1
             fcl2 = self._fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
-            self.fcl2 = fcl2
             logits = self._fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
-            self.logits = logits
+            
 
             ########################
             # END OF YOUR CODE    #
@@ -179,15 +173,8 @@ class ConvNet(object):
                                   ksize= [1, 3, 3, 1],
                                   strides=[1, 2, 2, 1],
                                   padding='SAME',
-                                  name='pool%i'%n_layer)
-            # add summary
-            if self.summary:
-              pass
-              #tf.histogram_summary("conv%i/out" %n_layer, out)
-              #tf.histogram_summary("conv%i/relu" %n_layer, relu)
-              #tf.histogram_summary("conv%i/in" %n_layer, conv_in)
-              #tf.histogram_summary("conv%i/weights"% n_layer, weights)
-              #tf.histogram_summary("conv%i/bias"% n_layer, bias)
+                                  name='pool')
+
                   
             return out	
 
@@ -218,13 +205,8 @@ class ConvNet(object):
 
             # Calculate activation
             if not last_layer:
-                fcl_out = tf.nn.relu(fcl_out, name="fcl%i"%n_layer)
+                fcl_out = tf.nn.relu(fcl_out, name="relu")
                 fcl_out = tf.nn.dropout(fcl_out, (1.0 -  self.dropout_rate ))
-            # Summaries
-            if self.summary: 
-                pass
-                #tf.histogram_summary("fcl%i/out" %n_layer, fcl_out)
-                #tf.histogram_summary("fcl%i/weights"% n_layer, weights)
-                #tf.histogram_summary("fcl%i/bias"% n_layer, bias)
+
             
             return fcl_out
