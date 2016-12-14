@@ -1,46 +1,139 @@
+dropout_rate : 0.5
 is_train : True
 data_dir : ./cifar10/cifar-10-batches-py
 eval_freq : 1000
 learning_rate : 0.0001
 print_freq : 10
 batch_size : 128
+summary : 0
 checkpoint_dir : ./checkpoints
+reg_strength : 0.0001
 log_dir : ./logs/cifar10
 train_model : linear
 checkpoint_freq : 5000
+batch_normal : 0
 max_steps : 15000
-Tensor("ConvNet/conv1/pool1:0", shape=(?, 16, 16, 64), dtype=float32)
-Tensor("ConvNet/conv2/pool2:0", shape=(?, 8, 8, 64), dtype=float32)
-Iteration 1/15000. Train Loss = 2.303, Train Accuracy = 0.234
+margin : 0.2
+saver : 1
+fraction_same : 0.2
+Iteration 1/15000. Train Loss = 2.303, Train Accuracy = 0.094
 Iteration 1/15000. Validation Loss = 2.303, Validation Accuracy = 0.100
-Iteration 1000/15000. Train Loss = 1.184, Train Accuracy = 0.531
-Iteration 1000/15000. Validation Loss = 1.103, Validation Accuracy = 0.613
-Iteration 2000/15000. Train Loss = 0.653, Train Accuracy = 0.734
-Iteration 2000/15000. Validation Loss = 0.868, Validation Accuracy = 0.705
-Iteration 3000/15000. Train Loss = 0.528, Train Accuracy = 0.797
-Iteration 3000/15000. Validation Loss = 0.812, Validation Accuracy = 0.736
-Iteration 4000/15000. Train Loss = 0.222, Train Accuracy = 0.930
-Iteration 4000/15000. Validation Loss = 0.922, Validation Accuracy = 0.745
-Iteration 5000/15000. Train Loss = 0.135, Train Accuracy = 0.953
-Iteration 5000/15000. Validation Loss = 1.139, Validation Accuracy = 0.743
-Iteration 6000/15000. Train Loss = 0.045, Train Accuracy = 0.992
-Iteration 6000/15000. Validation Loss = 1.457, Validation Accuracy = 0.752
-Iteration 7000/15000. Train Loss = 0.094, Train Accuracy = 0.977
-Iteration 7000/15000. Validation Loss = 1.833, Validation Accuracy = 0.732
-Iteration 8000/15000. Train Loss = 0.035, Train Accuracy = 0.984
-Iteration 8000/15000. Validation Loss = 1.948, Validation Accuracy = 0.741
-Iteration 9000/15000. Train Loss = 0.017, Train Accuracy = 1.000
-Iteration 9000/15000. Validation Loss = 2.124, Validation Accuracy = 0.746
-Iteration 10000/15000. Train Loss = 0.018, Train Accuracy = 0.992
-Iteration 10000/15000. Validation Loss = 2.270, Validation Accuracy = 0.740
-Iteration 11000/15000. Train Loss = 0.004, Train Accuracy = 1.000
-Iteration 11000/15000. Validation Loss = 2.342, Validation Accuracy = 0.752
-Iteration 12000/15000. Train Loss = 0.004, Train Accuracy = 1.000
-Iteration 12000/15000. Validation Loss = 2.508, Validation Accuracy = 0.747
-Iteration 13000/15000. Train Loss = 0.003, Train Accuracy = 1.000
-Iteration 13000/15000. Validation Loss = 2.582, Validation Accuracy = 0.749
-Iteration 14000/15000. Train Loss = 0.004, Train Accuracy = 1.000
-Iteration 14000/15000. Validation Loss = 2.495, Validation Accuracy = 0.751
-Iteration 15000/15000. Train Loss = 0.006, Train Accuracy = 1.000
-Iteration 15000/15000. Validation Loss = 2.528, Validation Accuracy = 0.747
-Total run time1090 seconds
+Iteration 1000/15000. Train Loss = 1.578, Train Accuracy = 0.430
+Iteration 1000/15000. Validation Loss = 1.364, Validation Accuracy = 0.506
+Iteration 2000/15000. Train Loss = 1.161, Train Accuracy = 0.586
+Iteration 2000/15000. Validation Loss = 1.056, Validation Accuracy = 0.627
+Iteration 3000/15000. Train Loss = 0.934, Train Accuracy = 0.641
+Iteration 3000/15000. Validation Loss = 0.928, Validation Accuracy = 0.690
+Iteration 4000/15000. Train Loss = 0.759, Train Accuracy = 0.727
+Iteration 4000/15000. Validation Loss = 0.816, Validation Accuracy = 0.726
+Iteration 5000/15000. Train Loss = 0.719, Train Accuracy = 0.758
+Iteration 5000/15000. Validation Loss = 0.763, Validation Accuracy = 0.745
+Iteration 6000/15000. Train Loss = 0.786, Train Accuracy = 0.742
+Iteration 6000/15000. Validation Loss = 0.753, Validation Accuracy = 0.753
+Iteration 7000/15000. Train Loss = 0.573, Train Accuracy = 0.836
+Iteration 7000/15000. Validation Loss = 0.744, Validation Accuracy = 0.759
+Iteration 8000/15000. Train Loss = 0.573, Train Accuracy = 0.797
+Iteration 8000/15000. Validation Loss = 0.729, Validation Accuracy = 0.768
+Iteration 9000/15000. Train Loss = 0.402, Train Accuracy = 0.859
+Iteration 9000/15000. Validation Loss = 0.758, Validation Accuracy = 0.772
+Iteration 10000/15000. Train Loss = 0.604, Train Accuracy = 0.844
+Iteration 10000/15000. Validation Loss = 0.745, Validation Accuracy = 0.777
+Iteration 11000/15000. Train Loss = 0.432, Train Accuracy = 0.867
+Iteration 11000/15000. Validation Loss = 0.821, Validation Accuracy = 0.777
+Iteration 12000/15000. Train Loss = 0.314, Train Accuracy = 0.898
+Iteration 12000/15000. Validation Loss = 0.800, Validation Accuracy = 0.778
+Iteration 13000/15000. Train Loss = 0.205, Train Accuracy = 0.930
+Iteration 13000/15000. Validation Loss = 0.863, Validation Accuracy = 0.779
+Iteration 14000/15000. Train Loss = 0.387, Train Accuracy = 0.883
+Iteration 14000/15000. Validation Loss = 0.873, Validation Accuracy = 0.780
+Iteration 15000/15000. Train Loss = 0.301, Train Accuracy = 0.906
+Iteration 15000/15000. Validation Loss = 0.931, Validation Accuracy = 0.773
+Total run time 576 seconds: 
+dropout_rate : 0.0
+is_train : 0
+data_dir : ./cifar10/cifar-10-batches-py
+eval_freq : 1000
+learning_rate : 0.0001
+print_freq : 10
+batch_size : 128
+summary : 0
+checkpoint_dir : ./checkpoints
+reg_strength : 0.0
+log_dir : ./logs/cifar10
+train_model : linear
+checkpoint_freq : 5000
+batch_normal : 0
+max_steps : 15000
+margin : 0.2
+saver : 0
+fraction_same : 0.2
+Creating model
+loading previous session
+Evaluating model
+========== conv_fcl2 ===========
+SVM predicts for plane a train accuracy 0.743750
+SVM predicts for plane a test accuracy 0.760000
+SVM predicts for car a train accuracy 0.713750
+SVM predicts for car a test accuracy 0.667500
+SVM predicts for bird a train accuracy 0.806250
+SVM predicts for bird a test accuracy 0.820000
+SVM predicts for cat a train accuracy 0.614375
+SVM predicts for cat a test accuracy 0.627500
+SVM predicts for deer a train accuracy 0.665000
+SVM predicts for deer a test accuracy 0.692500
+SVM predicts for dog a train accuracy 0.568750
+SVM predicts for dog a test accuracy 0.597500
+SVM predicts for frog a train accuracy 0.551875
+SVM predicts for frog a test accuracy 0.517500
+SVM predicts for horse a train accuracy 0.839375
+SVM predicts for horse a test accuracy 0.812500
+SVM predicts for ship a train accuracy 0.667500
+SVM predicts for ship a test accuracy 0.600000
+SVM predicts for truck a train accuracy 0.815625
+SVM predicts for truck a test accuracy 0.827500
+Average train accuracy: 0.698625 , test accuracy: 0.692250 
+========== conv_fcl1 ===========
+SVM predicts for plane a train accuracy 0.783750
+SVM predicts for plane a test accuracy 0.812500
+SVM predicts for car a train accuracy 0.781875
+SVM predicts for car a test accuracy 0.795000
+SVM predicts for bird a train accuracy 0.615000
+SVM predicts for bird a test accuracy 0.632500
+SVM predicts for cat a train accuracy 0.765625
+SVM predicts for cat a test accuracy 0.782500
+SVM predicts for deer a train accuracy 0.723125
+SVM predicts for deer a test accuracy 0.687500
+SVM predicts for dog a train accuracy 0.748125
+SVM predicts for dog a test accuracy 0.740000
+SVM predicts for frog a train accuracy 0.789375
+SVM predicts for frog a test accuracy 0.745000
+SVM predicts for horse a train accuracy 0.665000
+SVM predicts for horse a test accuracy 0.697500
+SVM predicts for ship a train accuracy 0.723750
+SVM predicts for ship a test accuracy 0.700000
+SVM predicts for truck a train accuracy 0.749375
+SVM predicts for truck a test accuracy 0.735000
+Average train accuracy: 0.734500 , test accuracy: 0.732750 
+========== conv_flatten ===========
+SVM predicts for plane a train accuracy 0.737500
+SVM predicts for plane a test accuracy 0.767500
+SVM predicts for car a train accuracy 0.645000
+SVM predicts for car a test accuracy 0.565000
+SVM predicts for bird a train accuracy 0.615625
+SVM predicts for bird a test accuracy 0.627500
+SVM predicts for cat a train accuracy 0.617500
+SVM predicts for cat a test accuracy 0.612500
+SVM predicts for deer a train accuracy 0.726875
+SVM predicts for deer a test accuracy 0.667500
+SVM predicts for dog a train accuracy 0.646875
+SVM predicts for dog a test accuracy 0.647500
+SVM predicts for frog a train accuracy 0.729375
+SVM predicts for frog a test accuracy 0.690000
+SVM predicts for horse a train accuracy 0.568750
+SVM predicts for horse a test accuracy 0.597500
+SVM predicts for ship a train accuracy 0.787500
+SVM predicts for ship a test accuracy 0.790000
+SVM predicts for truck a train accuracy 0.689375
+SVM predicts for truck a test accuracy 0.667500
+Average train accuracy: 0.676437 , test accuracy: 0.663250 
+========== siamese_fcl2 ===========

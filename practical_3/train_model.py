@@ -38,6 +38,8 @@ SAVER_DEFAULT = 0
 REG_STRENGTH_DEFAULT = 0.0
 DROPOUT_RATE_DEFAULT = 0.0
 BATCH_NORM_DEFAULT = 0
+FRACTION_SAME_DEFAULT = 0.2
+MARGIN_DEFAULT = 0.2
 
 
 
@@ -131,8 +133,8 @@ def train():
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
         if FLAGS.summary:
-            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + " convnn_train", sess.graph)
-            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/convnn/convnn_test")
+            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_train", sess.graph)
+            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
@@ -216,6 +218,8 @@ def train_siamese():
     tf.set_random_seed(42)
     np.random.seed(42)
 
+
+
     # test = cifar10_siamese_utils.create_dataset()
 
     with tf.name_scope('x'):
@@ -227,7 +231,7 @@ def train_siamese():
     s = siamese.Siamese()
     channel1 = s.inference(x1)
     channel2 = s.inference(x2, reuse=True)
-    loss = s.loss(channel1, channel2, y, 0.5)
+    loss = s.loss(channel1, channel2, y, FLAGS.margin)
     optimizer = train_step(loss)
     init = tf.initialize_all_variables()
 
@@ -237,9 +241,9 @@ def train_siamese():
     with tf.Session() as sess:
         sess.run(init)
 
-        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples = 1000, batch_size = FLAGS.batch_size, fraction_same = 0.2)
+        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
-                                                         fraction_same=0.2)
+                                                         fraction_same=FLAGS.fraction_same)
 
         train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
         #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
@@ -332,8 +336,7 @@ def feature_extraction():
             cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
             x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-            feed_dict = {x: x_test, y: y_test, Convnn.dropout_rate: 0.0}
-
+            feed_dict = {x: x_test, Convnn.dropout_rate: 0.0}
 
             flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/Reshape:0").eval(feed_dict)
             fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/fcl1/relu:0").eval(feed_dict)
@@ -360,7 +363,7 @@ def feature_extraction():
             cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
             x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-            feed_dict = {x: x_test, y: y_test}
+            feed_dict = {x1: x_test}
 
             l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
 
@@ -485,6 +488,11 @@ if __name__ == '__main__':
                         help='summary writer')
     parser.add_argument('--saver', type=int, default=SAVER_DEFAULT,
                         help='save model')
+    parser.add_argument('--fraction_same', type=float, default=FRACTION_SAME_DEFAULT,
+                        help='fraction same siamese')
+    parser.add_argument('--margin', type=float, default=MARGIN_DEFAULT,
+                        help='margin siamese loss')
+
 
     FLAGS, unparsed = parser.parse_known_args()
 

@@ -1,36 +1,12 @@
-========== conv_fcl2 ===========
-SVM predicts for plane a train accuracy 0.787500
-SVM predicts for car a train accuracy 0.707500
-SVM predicts for bird a train accuracy 0.807500
-SVM predicts for cat a train accuracy 0.614500
-SVM predicts for deer a train accuracy 0.686500
-SVM predicts for dog a train accuracy 0.556000
-SVM predicts for frog a train accuracy 0.543000
-SVM predicts for horse a train accuracy 0.847500
-SVM predicts for ship a train accuracy 0.690000
-SVM predicts for truck a train accuracy 0.824500
-Average train accuracy: 0.706450 
-========== conv_fcl1 ===========
-SVM predicts for plane a train accuracy 0.780000
-SVM predicts for car a train accuracy 0.761500
-SVM predicts for bird a train accuracy 0.615000
-SVM predicts for cat a train accuracy 0.754000
-SVM predicts for deer a train accuracy 0.721000
-SVM predicts for dog a train accuracy 0.740500
-SVM predicts for frog a train accuracy 0.784000
-SVM predicts for horse a train accuracy 0.667000
-SVM predicts for ship a train accuracy 0.730500
-SVM predicts for truck a train accuracy 0.725000
-Average train accuracy: 0.727850 
-========== conv_flatten ===========
-SVM predicts for plane a train accuracy 0.747500
-SVM predicts for car a train accuracy 0.638000
-SVM predicts for bird a train accuracy 0.611000
-SVM predicts for cat a train accuracy 0.619000
-SVM predicts for deer a train accuracy 0.699500
-SVM predicts for dog a train accuracy 0.655000
-SVM predicts for frog a train accuracy 0.730500
-SVM predicts for horse a train accuracy 0.557500
-SVM predicts for ship a train accuracy 0.788000
-SVM predicts for truck a train accuracy 0.655500
-Average train accuracy: 0.670150 
+========== siamese_fcl2 ===========
+SVM predicts for plane a train accuracy 0.773000
+SVM predicts for car a train accuracy 0.836500
+SVM predicts for bird a train accuracy 0.625500
+SVM predicts for cat a train accuracy 0.627000
+SVM predicts for deer a train accuracy 0.720500
+SVM predicts for dog a train accuracy 0.552000
+SVM predicts for frog a train accuracy 0.753500
+SVM predicts for horse a train accuracy 0.670000
+SVM predicts for ship a train accuracy 0.784500
+SVM predicts for truck a train accuracy 0.789500
+Average train accuracy: 0.713200 
