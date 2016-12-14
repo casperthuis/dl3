@@ -87,14 +87,14 @@ def train():
     # PUT YOUR CODE HERE  #
     ########################
     with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
+        x = tf.placeholder("float", [None, None, None, 3], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
     pool5, _ = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
-
-    flatten = tf.reshape(pool5, [-1, 64 * 8 * 8])
+    print(pool5.get_shape()[3])
+    flatten = tf.reshape(pool5, [-1, pool5.get_shape()[3].value])
 
     fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
 

@@ -14,4 +14,36 @@ checkpoint_freq : 5000
 batch_normal : 0
 max_steps : 15000
 saver : 0
-Iteration 0/15000. Train Loss = 0.286
+Iteration 0/15000. Train Loss = 0.480
+Iteration 0/15000. Validation Loss = 0.343
+Iteration 1/15000. Train Loss = 0.341
+Iteration 1/15000. Validation Loss = 0.345
+Iteration 1000/15000. Train Loss = 0.307
+Iteration 1000/15000. Validation Loss = 0.306
+Iteration 2000/15000. Train Loss = 0.264
+Iteration 2000/15000. Validation Loss = 0.302
+Iteration 3000/15000. Train Loss = 0.276
+Iteration 3000/15000. Validation Loss = 0.298
+Iteration 4000/15000. Train Loss = 0.331
+Iteration 4000/15000. Validation Loss = 0.294
+Iteration 5000/15000. Train Loss = 0.305
+Iteration 5000/15000. Validation Loss = 0.310
+Iteration 6000/15000. Train Loss = 0.364
+Iteration 6000/15000. Validation Loss = 0.305
+Iteration 7000/15000. Train Loss = 0.335
+Iteration 7000/15000. Validation Loss = 0.303
+Iteration 8000/15000. Train Loss = 0.340
+Iteration 8000/15000. Validation Loss = 0.297
+Iteration 9000/15000. Train Loss = 0.345
+Iteration 9000/15000. Validation Loss = 0.296
+Iteration 10000/15000. Train Loss = 0.335
+Iteration 10000/15000. Validation Loss = 0.297
+Iteration 11000/15000. Train Loss = 0.240
+Iteration 11000/15000. Validation Loss = 0.297
+Iteration 12000/15000. Train Loss = 0.295
+Iteration 12000/15000. Validation Loss = 0.293
+Iteration 13000/15000. Train Loss = 0.320
+Iteration 13000/15000. Validation Loss = 0.290
+Iteration 14000/15000. Train Loss = 0.313
+Iteration 14000/15000. Validation Loss = 0.309
+Total run time 2738 seconds: 

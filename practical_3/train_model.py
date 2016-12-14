@@ -227,7 +227,7 @@ def train_siamese():
     s = siamese.Siamese()
     channel1 = s.inference(x1)
     channel2 = s.inference(x2, reuse=True)
-    loss = s.loss(channel1, channel2, y, 1)
+    loss = s.loss(channel1, channel2, y, 0.5)
     optimizer = train_step(loss)
     init = tf.initialize_all_variables()
 
@@ -237,7 +237,7 @@ def train_siamese():
     with tf.Session() as sess:
         sess.run(init)
 
-        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples = 1000, batch_size = FLAGS.batch_size, fraction_same = 0.5)
+        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples = 1000, batch_size = FLAGS.batch_size, fraction_same = 0.2)
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
                                                          fraction_same=0.2)
 
@@ -265,7 +265,7 @@ def train_siamese():
                     x2_test = dset_test[j][1]
                     y_test = dset_test[j][2]
                     feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
-                    test_loss += sess.run([loss], feed_dict=feed_dict)
+                    test_loss += sess.run([loss], feed_dict=feed_dict)[0]
 
                 test_loss = test_loss/len(dset_test)
 
@@ -333,10 +333,9 @@ def feature_extraction():
             x_test, y_test = cifar10.test.images, cifar10.test.labels
 
             feed_dict = {x: x_test, y: y_test, Convnn.dropout_rate: 0.0}
-            #print([n.name for n in tf.get_default_graph().as_graph_def().node])ConvNet/conv2/pool2'
+
 
             flatten = tf.get_default_graph().get_tensor_by_name("ConvNet/Reshape:0").eval(feed_dict)
-            print(flatten.shape)
             fcl1 = tf.get_default_graph().get_tensor_by_name("ConvNet/fcl1/relu:0").eval(feed_dict)
             fcl2 = tf.get_default_graph().get_tensor_by_name("ConvNet/fcl2/relu:0").eval(feed_dict)
 
@@ -392,7 +391,7 @@ def _tnse(layer, labels, name):
 
     print("Creating figure")
     # create figure
-    fig = plt.figure()
+    plt.figure()
     labels = np.argmax(labels, axis=1)
 
     classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -403,7 +402,7 @@ def _tnse(layer, labels, name):
     plt.legend(classes)
     print("Saved image to images/%s.png" %(name))
     plt.savefig('images/%s.png'%name)
-    unnorm.dump("tsne_data/%s_tnse.dat"%name)
+    unnorm.dump("tsne_data/%s_tsne.dat"%name)
     labels.dump("tsne_data/%s_labels.dat" % name)
     print("Data dumped in tsne_data/")
     plt.close()

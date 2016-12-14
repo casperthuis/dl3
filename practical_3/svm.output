@@ -1,33 +1,36 @@
-========== tsne_fcl2 ===========
-SVM predicts for plane a accuracy 0.483000
-SVM predicts for car a accuracy 0.496500
-SVM predicts for bird a accuracy 0.499500
-SVM predicts for cat a accuracy 0.506000
-SVM predicts for deer a accuracy 0.498000
-SVM predicts for dog a accuracy 0.502000
-SVM predicts for frog a accuracy 0.500500
-SVM predicts for horse a accuracy 0.506500
-SVM predicts for ship a accuracy 0.516000
-SVM predicts for truck a accuracy 0.492500
-========== tsne_fcl1 ===========
-SVM predicts for plane a accuracy 0.515500
-SVM predicts for car a accuracy 0.474500
-SVM predicts for bird a accuracy 0.517500
-SVM predicts for cat a accuracy 0.526000
-SVM predicts for deer a accuracy 0.496000
-SVM predicts for dog a accuracy 0.527000
-SVM predicts for frog a accuracy 0.508000
-SVM predicts for horse a accuracy 0.499500
-SVM predicts for ship a accuracy 0.490000
-SVM predicts for truck a accuracy 0.484500
-========== tsne_flatten ===========
-SVM predicts for plane a accuracy 0.504000
-SVM predicts for car a accuracy 0.501000
-SVM predicts for bird a accuracy 0.487500
-SVM predicts for cat a accuracy 0.494500
-SVM predicts for deer a accuracy 0.479500
-SVM predicts for dog a accuracy 0.494500
-SVM predicts for frog a accuracy 0.489000
-SVM predicts for horse a accuracy 0.495500
-SVM predicts for ship a accuracy 0.498000
-SVM predicts for truck a accuracy 0.502500
+========== conv_fcl2 ===========
+SVM predicts for plane a train accuracy 0.787500
+SVM predicts for car a train accuracy 0.707500
+SVM predicts for bird a train accuracy 0.807500
+SVM predicts for cat a train accuracy 0.614500
+SVM predicts for deer a train accuracy 0.686500
+SVM predicts for dog a train accuracy 0.556000
+SVM predicts for frog a train accuracy 0.543000
+SVM predicts for horse a train accuracy 0.847500
+SVM predicts for ship a train accuracy 0.690000
+SVM predicts for truck a train accuracy 0.824500
+Average train accuracy: 0.706450 
+========== conv_fcl1 ===========
+SVM predicts for plane a train accuracy 0.780000
+SVM predicts for car a train accuracy 0.761500
+SVM predicts for bird a train accuracy 0.615000
+SVM predicts for cat a train accuracy 0.754000
+SVM predicts for deer a train accuracy 0.721000
+SVM predicts for dog a train accuracy 0.740500
+SVM predicts for frog a train accuracy 0.784000
+SVM predicts for horse a train accuracy 0.667000
+SVM predicts for ship a train accuracy 0.730500
+SVM predicts for truck a train accuracy 0.725000
+Average train accuracy: 0.727850 
+========== conv_flatten ===========
+SVM predicts for plane a train accuracy 0.747500
+SVM predicts for car a train accuracy 0.638000
+SVM predicts for bird a train accuracy 0.611000
+SVM predicts for cat a train accuracy 0.619000
+SVM predicts for deer a train accuracy 0.699500
+SVM predicts for dog a train accuracy 0.655000
+SVM predicts for frog a train accuracy 0.730500
+SVM predicts for horse a train accuracy 0.557500
+SVM predicts for ship a train accuracy 0.788000
+SVM predicts for truck a train accuracy 0.655500
+Average train accuracy: 0.670150 
