@@ -12,7 +12,40 @@ log_dir : ./logs/cifar10
 train_model : siamese
 checkpoint_freq : 5000
 batch_normal : 0
-max_steps : 30000
-margin : 0.7
+max_steps : 15000
+margin : 1.0
 saver : 0
 fraction_same : 0.2
+Iteration 0/15000. Train Loss = 0.388
+Iteration 0/15000. Validation Loss = 0.708
+Iteration 1/15000. Train Loss = 0.724
+Iteration 1/15000. Validation Loss = 0.754
+Iteration 1000/15000. Train Loss = 0.648
+Iteration 1000/15000. Validation Loss = 0.650
+Iteration 2000/15000. Train Loss = 0.516
+Iteration 2000/15000. Validation Loss = 0.542
+Iteration 3000/15000. Train Loss = 0.488
+Iteration 3000/15000. Validation Loss = 0.489
+Iteration 4000/15000. Train Loss = 0.454
+Iteration 4000/15000. Validation Loss = 0.422
+Iteration 5000/15000. Train Loss = 0.379
+Iteration 5000/15000. Validation Loss = 0.390
+Iteration 6000/15000. Train Loss = 0.337
+Iteration 6000/15000. Validation Loss = 0.342
+Iteration 7000/15000. Train Loss = 0.264
+Iteration 7000/15000. Validation Loss = 0.318
+Iteration 8000/15000. Train Loss = 0.334
+Iteration 8000/15000. Validation Loss = 0.311
+Iteration 9000/15000. Train Loss = 0.304
+Iteration 9000/15000. Validation Loss = 0.292
+Iteration 10000/15000. Train Loss = 0.309
+Iteration 10000/15000. Validation Loss = 0.286
+Iteration 11000/15000. Train Loss = 0.260
+Iteration 11000/15000. Validation Loss = 0.274
+Iteration 12000/15000. Train Loss = 0.236
+Iteration 12000/15000. Validation Loss = 0.267
+Iteration 13000/15000. Train Loss = 0.242
+Iteration 13000/15000. Validation Loss = 0.259
+Iteration 14000/15000. Train Loss = 0.226
+Iteration 14000/15000. Validation Loss = 0.250
+Total run time 2655 seconds: 

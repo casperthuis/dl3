@@ -90,7 +90,7 @@ class Siamese(object):
         ########################
         # PUT YOUR CODE HERE  #
         ########################
-        d2 = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
+        d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
         #d_sqrt = tf.sqrt(d)
         right_part = tf.mul((1 - label), tf.maximum(0., margin - d))
         left_part = tf.mul(label, d)

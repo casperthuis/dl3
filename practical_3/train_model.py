@@ -107,8 +107,11 @@ def train():
     ########################
     Convnn = convnet.ConvNet()
     Convnn.summary = FLAGS.summary
+
+    cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+    x_test, y_test = cifar10.test.images, cifar10.test.labels
     with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, 32,32, 3], name="X_train")
+        x = tf.placeholder("float", [None, x_test.shape[1],x_test.shape[2], x_test.shape[3]], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
@@ -402,7 +405,8 @@ def _tnse(layer, labels, name):
         class_points = tsne[labels == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.axis([0,1,0,1])
-    plt.legend(classes)
+    plt.legend(classes, loc='upper center', bbox_to_anchor=(0.5, 1.05),
+          ncol=5, fancybox=True, shadow=True)
     print("Saved image to images/%s.png" %(name))
     plt.savefig('images/%s.png'%name)
     unnorm.dump("tsne_data/%s_tsne.dat"%name)

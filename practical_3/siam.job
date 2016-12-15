@@ -10,18 +10,10 @@ module load cuda/7.5.18
 module load cudnn/7.5-v5
 
 python train_model.py --train_model 'siamese' \
-                      --margin 0.7 \
-                      --faction_same 0.5\
+                      --margin 1 \
+                      --faction_same 0.3\
                       --reg_strength 0.001 \
                       --dropout_rate 0.5 \
-                      --eval_freq 3000 \
-                      --max_step 30000
+                      --eval_freq 3000
 
-#python train_model.py --train_model 'siamese' \
-#                      --margin 0.9 \
-#                      --faction_same 0.5\
-#                      --reg_strength 0.001 \
-#                      --dropout_rate 0.5 \
-#                      --eval_freq 3000 \
-#                      --max_step 20000 \
 
