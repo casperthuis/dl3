@@ -11,9 +11,10 @@ module load cudnn/7.5-v5
 
 python train_model.py --train_model 'siamese' \
                       --margin 1 \
-                      --faction_same 0.3\
-                      --reg_strength 0.001 \
-                      --dropout_rate 0.5 \
+                      --faction_same 0.2\
+                      --reg_strength 0.00 \
+                      --dropout_rate 0.0 \
+                      --max_steps 30000\
                       --eval_freq 3000
 
 

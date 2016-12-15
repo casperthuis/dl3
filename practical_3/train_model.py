@@ -244,9 +244,9 @@ def train_siamese():
     with tf.Session() as sess:
         sess.run(init)
 
-        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
+        # dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
-                                                         fraction_same=FLAGS.fraction_same)
+                                                        fraction_same=FLAGS.fraction_same)
 
         train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
         #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
@@ -261,27 +261,27 @@ def train_siamese():
 
             train_writer.add_summary(summary, i)
 
-            if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
-
-                print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
+        #     if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
+        #
+            print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
                     i, FLAGS.max_steps, l_train))
-
-                test_loss = 0
-                for j in range(len(dset_test)):
-                    x1_test = dset_test[j][0]
-                    x2_test = dset_test[j][1]
-                    y_test = dset_test[j][2]
-                    feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
-                    test_loss += sess.run([loss], feed_dict=feed_dict)[0]
-
-                test_loss = test_loss/len(dset_test)
-
-                #test_writer.add_summary(summary, i)
-
-                print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
-                    i, FLAGS.max_steps, test_loss))
-
-        saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
+        #
+        #         test_loss = 0
+        #         for j in range(len(dset_test)):
+        #             x1_test = dset_test[j][0]
+        #             x2_test = dset_test[j][1]
+        #             y_test = dset_test[j][2]
+        #             feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
+        #             test_loss += sess.run([loss], feed_dict=feed_dict)[0]
+        #
+        #         test_loss = test_loss/len(dset_test)
+        #
+        #         #test_writer.add_summary(summary, i)
+        #
+        #         print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
+        #             i, FLAGS.max_steps, test_loss))
+        #
+        # saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
     ########################
     # PUT YOUR CODE HERE  #
     ########################

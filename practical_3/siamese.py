@@ -167,7 +167,7 @@ class Siamese(object):
         bias_init = tf.constant_initializer(0.)
 
         # TUNING MODEL:
-        weight_reg = regularizers.l2_regularizer(0.001)
+        weight_reg = regularizers.l2_regularizer(0.000)
         dropout_rate = 0.0
 
         with tf.name_scope('fcl%i' % n_layer) as scope:
