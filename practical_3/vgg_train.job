@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -n 1
 #SBATCH -p gpu
-#SBATCH -t 04:00:00
+#SBATCH -t 06:00:00
 #SBATCH -o vgg_train.output
 #SBATCH -e vgg_train.error
 
@@ -9,4 +9,17 @@ module load python/2.7.11
 module load cuda/7.5.18
 module load cudnn/7.5-v5
 
-python retrain_vgg.py --max_steps 20000
+python retrain_vgg.py --refine_after_k 10 \
+                      --log_dir ./logs/cifar10/vgg/k_0/
+
+python retrain_vgg.py --refine_after_k 100 \
+                      --log_dir ./logs/cifar10/vgg/k_100/
+
+python retrain_vgg.py --refine_after_k 1000 \
+                      --log_dir ./logs/cifar10/vgg/k_1000/
+
+python retrain_vgg.py --refine_after_k 2500 \
+                      --log_dir ./logs/cifar10/vgg/k_2500/
+
+python retrain_vgg.py --refine_after_k 15000 \
+                      --log_dir ./logs/cifar10/vgg/k_15000/

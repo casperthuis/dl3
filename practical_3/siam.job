@@ -14,7 +14,8 @@ python train_model.py --train_model 'siamese' \
                       --faction_same 0.2\
                       --reg_strength 0.00 \
                       --dropout_rate 0.0 \
-                      --max_steps 30000\
-                      --eval_freq 3000
+                      --max_steps 20000\
+                      --eval_freq 3000 \
+                      --logdir ./logs/cifar10/siamese/
 
 

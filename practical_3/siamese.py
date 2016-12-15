@@ -60,6 +60,53 @@ class Siamese(object):
 
         return l2_out
 
+    # def loss(self, channel_1, channel_2, label, margin):
+    #     """
+    #     Defines the contrastive loss. This loss ties the outputs of
+    #     the branches to compute the following:
+    #
+    #            L =  Y * d^2 + (1-Y) * max(margin - d^2, 0)
+    #
+    #            where d is the L2 distance between the given
+    #            input pair s.t. d = ||x_1 - x_2||_2 and Y is
+    #            label associated with the pair of input tensors.
+    #            Y is 1 if the inputs belong to the same class in
+    #            CIFAR10 and is 0 otherwise.
+    #
+    #            For more information please see:
+    #            http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
+    #
+    #     Args:
+    #         channel_1: output of first channel (i.e. branch_1),
+    #                           tensor of size [batch_size, 192]
+    #         channel_2: output of second channel (i.e. branch_2),
+    #                           tensor of size [batch_size, 192]
+    #         label: Tensor of shape [batch_size]
+    #         margin: Margin of the contrastive loss
+    #
+    #     Returns:
+    #         loss: scalar float Tensor
+    #     """
+    #     ########################
+    #     # PUT YOUR CODE HERE  #
+    #     ########################
+    #     d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
+    #     #d_sqrt = tf.sqrt(d)
+    #     right_part = tf.mul((1 - label), tf.maximum(0., margin - d))
+    #     left_part = tf.mul(label, d)
+    #     contrastive_loss = tf.reduce_mean(tf.add(right_part, left_part))
+    #     reg_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
+    #     full_loss = contrastive_loss + reg_loss
+    #     tf.scalar_summary("cross_entropy", contrastive_loss)
+    #     tf.scalar_summary("reg_loss", reg_loss)
+    #     tf.scalar_summary("full_loss", full_loss)
+    #     ########################
+    #     # END OF YOUR CODE    #
+    #     ########################
+    #
+    #     return full_loss
+
+
     def loss(self, channel_1, channel_2, label, margin):
         """
         Defines the contrastive loss. This loss ties the outputs of
@@ -87,25 +134,20 @@ class Siamese(object):
         Returns:
             loss: scalar float Tensor
         """
-        ########################
-        # PUT YOUR CODE HERE  #
-        ########################
         d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
-        #d_sqrt = tf.sqrt(d)
-        right_part = tf.mul((1 - label), tf.maximum(0., margin - d))
-        left_part = tf.mul(label, d)
-        contrastive_loss = tf.reduce_mean(tf.add(right_part, left_part))
+        d_sqrt = tf.sqrt(d)
+
+        loss = label * tf.square(tf.maximum(0., margin - d_sqrt)) + (1 - label) * d
+
+        contrastive_loss = 0.5 * tf.reduce_mean(loss)
+
         reg_loss = tf.reduce_sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
         full_loss = contrastive_loss + reg_loss
         tf.scalar_summary("cross_entropy", contrastive_loss)
         tf.scalar_summary("reg_loss", reg_loss)
         tf.scalar_summary("full_loss", full_loss)
-        ########################
-        # END OF YOUR CODE    #
-        ########################
 
         return full_loss
-
 
     def _conv_layer(self, out_p, w_dims, n_layer):
         conv_stride = [1, 1, 1, 1]
