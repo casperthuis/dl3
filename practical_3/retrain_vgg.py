@@ -23,9 +23,17 @@ OPTIMIZER_DEFAULT = 'ADAM'
 REFINE_AFTER_K_STEPS_DEFAULT = 0
 
 DATA_DIR_DEFAULT = './cifar10/cifar-10-batches-py'
-LOG_DIR_DEFAULT = './logs/cifar10'
+LOG_DIR_DEFAULT = './logs/cifar10/vgg'
 CHECKPOINT_DIR_DEFAULT = './checkpoints'
 
+#CUSTOM ARGS
+SUMMARY_DEFAULT = 0
+SAVER_DEFAULT = 0
+REG_STRENGTH_DEFAULT = 0.0
+DROPOUT_RATE_DEFAULT = 0.0
+BATCH_NORM_DEFAULT = 0
+FRACTION_SAME_DEFAULT = 0.2
+MARGIN_DEFAULT = 0.2
 
 
 def train_step(loss):
@@ -44,9 +52,10 @@ def train_step(loss):
     # PUT YOUR CODE HERE  #
     ########################
     optimizer = tf.train.AdamOptimizer
+    train_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "FCL/")
 
-    train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss)
-
+    train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss, var_list=train_vars)
+    # train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss)
 
     ########################
     # END OF YOUR CODE    #
@@ -86,41 +95,41 @@ def train():
     ########################
     # PUT YOUR CODE HERE  #
     ########################
-    with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, None, None, 3], name="X_train")
+    cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+    x_test,_ = cifar10.test.images, cifar10.test.labels
+    with tf.name_scope('x'):        # NONE NONE NONE 3
+        x = tf.placeholder("float", [None,None, None, 3], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
-    pool5, _ = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
+    pool5, assign_ops = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
-    print(pool5.get_shape()[3])
-    flatten = tf.reshape(pool5, [-1, pool5.get_shape()[3].value])
+    with tf.variable_scope('FCL'):
+        flatten = tf.reshape(pool5, [-1, pool5.get_shape()[3].value])
 
-    fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
+        fcl1 = fcl_layer(flatten, [flatten.get_shape()[1].value, 384], 1)
 
-    fcl2 = fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
+        fcl2 = fcl_layer(fcl1, [fcl1.get_shape()[1].value, 192], 2)
 
-    logits = fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
+        logits = fcl_layer(fcl2, [fcl2.get_shape()[1].value, 10], 3, last_layer=True)
 
     loss = Convnn.loss(logits, y)
     accuracy = Convnn.accuracy(logits, y)
     optimizer = train_step(loss)
-
     init = tf.initialize_all_variables()
     merge = tf.merge_all_summaries()
 
     with tf.Session() as sess:
         sess.run(init)
+        sess.run(assign_ops)
 
-        cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg_train", sess.graph)
-        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg_test")
+        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg/vgg_train", sess.graph)
+        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg/vgg_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
-
 
             _, l_train, acc_train, summary = sess.run([optimizer, loss, accuracy, merge],
                                                       feed_dict={x: x_train,
@@ -132,12 +141,9 @@ def train():
                     i, FLAGS.max_steps, l_train, acc_train))
 
                 l_val, acc_val, summary = sess.run([loss, accuracy, merge],
-                                                       feed_dict={x: x_test, y: y_test,
-                                                                  Convnn.weight_reg_strength: FLAGS.reg_strength,
-                                                                  Convnn.dropout_rate: 0.0})
+                                                       feed_dict={x: x_test, y: y_test})
 
                 test_writer.add_summary(summary, i)
-
 
                 print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}, Validation Accuracy = {3:.3f}".format(
                     i, FLAGS.max_steps, l_val, acc_val))
@@ -160,7 +166,7 @@ def fcl_layer(out_p, w_dims, n_layer, last_layer=False):
         weights = tf.get_variable(
             shape=w_dims,
             initializer=tf.random_normal_initializer(stddev=0.001),
-            regularizer=regularizers.l2_regularizer(0.0),
+            regularizer=regularizers.l2_regularizer(0.001),
             name="fcl%i/weights" % n_layer)
 
         # Create bias
@@ -176,7 +182,7 @@ def fcl_layer(out_p, w_dims, n_layer, last_layer=False):
         # Calculate activation
         if not last_layer:
             fcl_out = tf.nn.relu(fcl_out, name="fcl%i" % n_layer)
-            fcl_out = tf.nn.dropout(fcl_out, (1.0 - 0))
+            fcl_out = tf.nn.dropout(fcl_out, (1.0 - 0.5))
 
         return fcl_out
 
@@ -233,8 +239,19 @@ if __name__ == '__main__':
                       help='Summaries log directory')
     parser.add_argument('--checkpoint_dir', type = str, default = CHECKPOINT_DIR_DEFAULT,
                       help='Checkpoint directory')
+    parser.add_argument('--reg_strength', type=float, default=REG_STRENGTH_DEFAULT,
+                        help='reg strength')
+    parser.add_argument('--dropout_rate', type=float, default=DROPOUT_RATE_DEFAULT,
+                        help='dropout rate')
+    parser.add_argument('--batch_normal', type=int, default=BATCH_NORM_DEFAULT,
+                        help='batch normalisation')
+    parser.add_argument('--summary', type=int, default=SUMMARY_DEFAULT,
+                        help='summary writer')
+    parser.add_argument('--saver', type=int, default=SAVER_DEFAULT,
+                        help='save model')
 
 
     FLAGS, unparsed = parser.parse_known_args()
 
     tf.app.run()
+e

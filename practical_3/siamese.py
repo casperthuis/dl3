@@ -90,7 +90,7 @@ class Siamese(object):
         ########################
         # PUT YOUR CODE HERE  #
         ########################
-        d2 = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
+        d = tf.reduce_sum(tf.square(channel_1 - channel_2), 1)
         #d_sqrt = tf.sqrt(d)
         right_part = tf.mul((1 - label), tf.maximum(0., margin - d))
         left_part = tf.mul(label, d)
@@ -167,7 +167,7 @@ class Siamese(object):
         bias_init = tf.constant_initializer(0.)
 
         # TUNING MODEL:
-        weight_reg = regularizers.l2_regularizer(0.001)
+        weight_reg = regularizers.l2_regularizer(0.000)
         dropout_rate = 0.0
 
         with tf.name_scope('fcl%i' % n_layer) as scope:

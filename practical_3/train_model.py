@@ -107,8 +107,11 @@ def train():
     ########################
     Convnn = convnet.ConvNet()
     Convnn.summary = FLAGS.summary
+
+    cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
+    x_test, y_test = cifar10.test.images, cifar10.test.labels
     with tf.name_scope('x'):
-        x = tf.placeholder("float", [None, 32,32, 3], name="X_train")
+        x = tf.placeholder("float", [None, x_test.shape[1],x_test.shape[2], x_test.shape[3]], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
 
@@ -241,9 +244,9 @@ def train_siamese():
     with tf.Session() as sess:
         sess.run(init)
 
-        dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
+        # dset_test = cifar10_siamese_utils.create_dataset(source="Test", num_tuples =1000, batch_size = FLAGS.batch_size, fraction_same = FLAGS.fraction_same)
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
-                                                         fraction_same=FLAGS.fraction_same)
+                                                        fraction_same=FLAGS.fraction_same)
 
         train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
         #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
@@ -258,27 +261,27 @@ def train_siamese():
 
             train_writer.add_summary(summary, i)
 
-            if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
-
-                print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
+        #     if i % EVAL_FREQ_DEFAULT == 0 or i == 1:
+        #
+            print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}".format(
                     i, FLAGS.max_steps, l_train))
-
-                test_loss = 0
-                for j in range(len(dset_test)):
-                    x1_test = dset_test[j][0]
-                    x2_test = dset_test[j][1]
-                    y_test = dset_test[j][2]
-                    feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
-                    test_loss += sess.run([loss], feed_dict=feed_dict)[0]
-
-                test_loss = test_loss/len(dset_test)
-
-                #test_writer.add_summary(summary, i)
-
-                print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
-                    i, FLAGS.max_steps, test_loss))
-
-        saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
+        #
+        #         test_loss = 0
+        #         for j in range(len(dset_test)):
+        #             x1_test = dset_test[j][0]
+        #             x2_test = dset_test[j][1]
+        #             y_test = dset_test[j][2]
+        #             feed_dict = {x1: x1_test, x2: x2_test, y: y_test}
+        #             test_loss += sess.run([loss], feed_dict=feed_dict)[0]
+        #
+        #         test_loss = test_loss/len(dset_test)
+        #
+        #         #test_writer.add_summary(summary, i)
+        #
+        #         print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
+        #             i, FLAGS.max_steps, test_loss))
+        #
+        # saver.save(sess, FLAGS.checkpoint_dir + '/siamese.ckpt')
     ########################
     # PUT YOUR CODE HERE  #
     ########################
@@ -402,7 +405,8 @@ def _tnse(layer, labels, name):
         class_points = tsne[labels == i]
         plt.scatter(class_points[:,0], class_points[:,1], color=plt.cm.Set1(i*25), alpha=0.5)
     plt.axis([0,1,0,1])
-    plt.legend(classes)
+    plt.legend(classes, loc='upper center', bbox_to_anchor=(0.5, 1.05),
+          ncol=5, fancybox=True, shadow=True)
     print("Saved image to images/%s.png" %(name))
     plt.savefig('images/%s.png'%name)
     unnorm.dump("tsne_data/%s_tsne.dat"%name)
