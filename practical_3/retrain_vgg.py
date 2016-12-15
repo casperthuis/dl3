@@ -36,7 +36,7 @@ FRACTION_SAME_DEFAULT = 0.2
 MARGIN_DEFAULT = 0.2
 
 
-def train_step(loss):
+def train_step(loss, iter):
     """
     Defines the ops to conduct an optimization step. You can set a learning
     rate scheduler or pick your favorite optimizer here. This set of operations
@@ -51,10 +51,15 @@ def train_step(loss):
     ########################
     # PUT YOUR CODE HERE  #
     ########################
+
     optimizer = tf.train.AdamOptimizer
     train_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "FCL/")
+    train_op = tf.cond(iter >= FLAGS.refine_after_k,
+                       lambda: optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss),
+                       lambda: optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss, var_list=train_vars))
 
-    train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss, var_list=train_vars)
+
+    #train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss, var_list=train_vars)
     # train_op = optimizer(FLAGS.learning_rate, name='optimizer').minimize(loss)
 
     ########################
@@ -96,11 +101,14 @@ def train():
     # PUT YOUR CODE HERE  #
     ########################
     cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
-    x_test,_ = cifar10.test.images, cifar10.test.labels
+    x_test = cifar10.test.images
     with tf.name_scope('x'):        # NONE NONE NONE 3
         x = tf.placeholder("float", [None,None, None, 3], name="X_train")
     with tf.name_scope('y'):
         y = tf.placeholder("float", [None, Convnn.n_classes], name="Y_train")
+    with tf.name_scope('iteration'):
+        iter = tf.placeholder("float", None, name="iter")
+
 
     pool5, assign_ops = vgg.load_pretrained_VGG16_pool5(x, scope_name='vgg')
 
@@ -115,7 +123,7 @@ def train():
 
     loss = Convnn.loss(logits, y)
     accuracy = Convnn.accuracy(logits, y)
-    optimizer = train_step(loss)
+    optimizer = train_step(loss, iter)
     init = tf.initialize_all_variables()
     merge = tf.merge_all_summaries()
 
@@ -125,16 +133,19 @@ def train():
 
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
-        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg/vgg_train", sess.graph)
-        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/vgg/vgg_test")
+        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "vgg_train", sess.graph)
+        test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "vgg_test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
 
+
             _, l_train, acc_train, summary = sess.run([optimizer, loss, accuracy, merge],
                                                       feed_dict={x: x_train,
-                                                                 y: y_train})
+                                                                 y: y_train,
+                                                                 iter: i})
             train_writer.add_summary(summary, i)
+
 
             if i % FLAGS.eval_freq == 0 or i == 1:
                 print("Iteration {0:d}/{1:d}. Train Loss = {2:.3f}, Train Accuracy = {3:.3f}".format(
