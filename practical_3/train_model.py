@@ -136,8 +136,8 @@ def train():
         x_test, y_test = cifar10.test.images, cifar10.test.labels
 
         if FLAGS.summary:
-            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_train", sess.graph)
-            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "convnn_test")
+            train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "train", sess.graph)
+            test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "test")
 
         for i in range(1, FLAGS.max_steps + 1):
             x_train, y_train = cifar10.train.next_batch(FLAGS.batch_size)
@@ -248,8 +248,8 @@ def train_siamese():
         dset_train = cifar10_siamese_utils.create_dataset(source="Test", num_tuples=FLAGS.max_steps, batch_size=FLAGS.batch_size,
                                                         fraction_same=FLAGS.fraction_same)
 
-        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_train", sess.graph)
-        #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/siamese_test")
+        train_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/train", sess.graph)
+        #test_writer = tf.train.SummaryWriter(FLAGS.log_dir + "/test")
 
         for i in range(0, FLAGS.max_steps):
             x1_train = dset_train[i][0]
@@ -496,7 +496,6 @@ if __name__ == '__main__':
                         help='fraction same siamese')
     parser.add_argument('--margin', type=float, default=MARGIN_DEFAULT,
                         help='margin siamese loss')
-
 
     FLAGS, unparsed = parser.parse_known_args()
 
