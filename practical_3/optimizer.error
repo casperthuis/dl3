@@ -9,7 +9,7 @@ major: 3 minor: 5 memoryClockRate (GHz) 0.745
 pciBusID 0000:02:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x3eaddc0
+W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x491b120
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
 name: Tesla K40m
 major: 3 minor: 5 memoryClockRate (GHz) 0.745
@@ -34,7 +34,7 @@ major: 3 minor: 5 memoryClockRate (GHz) 0.745
 pciBusID 0000:02:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x37dead0
+W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x5413b70
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
 name: Tesla K40m
 major: 3 minor: 5 memoryClockRate (GHz) 0.745
@@ -59,7 +59,7 @@ major: 3 minor: 5 memoryClockRate (GHz) 0.745
 pciBusID 0000:02:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x46dfff0
+W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x5226940
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
 name: Tesla K40m
 major: 3 minor: 5 memoryClockRate (GHz) 0.745
@@ -73,156 +73,3 @@ I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x55539f0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x4171310
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x36ac840
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x4e7cee0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x344e150
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so.7.5 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
-I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so.7.5 locally
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:02:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x3ed92a0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
-name: Tesla K40m
-major: 3 minor: 5 memoryClockRate (GHz) 0.745
-pciBusID 0000:82:00.0
-Total memory: 11.17GiB
-Free memory: 11.10GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 0 to device ordinal 1
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:59] cannot enable peer access from device ordinal 1 to device ordinal 0
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 1 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
-E tensorflow/stream_executor/cuda/cuda_event.cc:49] Error polling for event status: failed to query event: CUDA_ERROR_LAUNCH_FAILED
-F tensorflow/core/common_runtime/gpu/gpu_event_mgr.cc:198] Unexpected Event status: 1
-/var/log/slurm/spool_slurmd//job2646826/slurm_script: line 68: 101905 Aborted                 (core dumped) python train_model.py --reg_strength 0.0001 --dropout_rate 0.5 --batch_size 512 --summary 1 --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_512/

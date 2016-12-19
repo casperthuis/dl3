@@ -1,0 +1,25 @@
+dropout_rate : 0.0
+is_train : 0
+data_dir : ./cifar10/cifar-10-batches-py
+eval_freq : 1000
+learning_rate : 0.0001
+print_freq : 10
+batch_size : 128
+summary : 0
+checkpoint_dir : ./checkpoints
+reg_strength : 0.0
+log_dir : ./logs/cifar10
+train_model : siamese
+checkpoint_freq : 5000
+batch_normal : 0
+max_steps : 15000
+margin : 0.2
+saver : 0
+fraction_same : 0.2
+loading previous session
+Evaluating model
+Calculating TSNE for layersiamese_fcl2
+Creating figure
+Saved image to images/siamese_fcl2.png
+Data dumped in tsne_data/
+Total run time 298 seconds: 

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -n 1
 #SBATCH -p gpu
-#SBATCH -t 02:00:00
+#SBATCH -t 05:30:00
 #SBATCH -o siam.output
 #SBATCH -e siam.error
 
@@ -12,10 +12,9 @@ module load cudnn/7.5-v5
 python train_model.py --train_model 'siamese' \
                       --margin 1 \
                       --faction_same 0.2\
-                      --reg_strength 0.00 \
-                      --dropout_rate 0.0 \
-                      --max_steps 20000\
-                      --eval_freq 3000 \
-                      --logdir ./logs/cifar10/siamese/
+                      --summary 1\
+                      --saver 1\
+                      --max_steps 50000\
+                      --logdir ./logs/cifar10/siamese/step50k_new
 
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -n 1
-#SBATCH -p gpu
+#SBATCH -p gpu_short
 #SBATCH -t 00:60:00
 #SBATCH -o feat_siam.output
 #SBATCH -e feat_siam.error

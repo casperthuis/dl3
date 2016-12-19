@@ -9,7 +9,7 @@ major: 3 minor: 5 memoryClockRate (GHz) 0.745
 pciBusID 0000:02:00.0
 Total memory: 11.17GiB
 Free memory: 11.10GiB
-W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x4bc6490
+W tensorflow/stream_executor/cuda/cuda_driver.cc:572] creating context when one is currently active; existing: 0x3dcfa50
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 1 with properties: 
 name: Tesla K40m
 major: 3 minor: 5 memoryClockRate (GHz) 0.745
@@ -23,3 +23,4 @@ I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y N
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 1:   N Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:02:00.0)
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:1) -> (device: 1, name: Tesla K40m, pci bus id: 0000:82:00.0)
+slurmstepd: *** JOB 2656637 ON gcn9 CANCELLED AT 2016-12-19T14:11:09 DUE TO TIME LIMIT ***

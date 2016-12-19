@@ -245,28 +245,66 @@ class DataSet(object):
     ########################
     # PUT YOUR CODE HERE  #
     ########################
-    fraction_same_number = int(fraction_same * batch_size)
+    x1 = np.zeros((batch_size, 32, 32, 3))
+    x2 = np.zeros((batch_size, 32, 32, 3))
+    labels = np.zeros(batch_size)
+    used_idxs = []
 
-    index_anchor_image = np.random.choice(len(self.images), 1)[0]
-    label_anchor_image = self.labels[index_anchor_image]
-    anchor_image = self.images[index_anchor_image]
+    # get random image
+    rand_idx = np.random.randint(self._num_examples, size=1)
+    rand_img = self._images[rand_idx]
+    rand_label = self._labels[rand_idx]
+    used_idxs.append(rand_idx)
 
-    class_images_index = np.nonzero(label_anchor_image)[0][0] == np.nonzero(self.labels)[1]
-    class_images = self.images[class_images_index]
-    # class_labels = self.labels[class_images_index]
-    random_class_indexes = np.random.choice(len(class_images), fraction_same_number)
-    random_class_images = class_images[random_class_indexes]
-    random_class_labels = np.ones(len(random_class_images))
+    for i in range(batch_size):
+      x1[i, :, :, :] = rand_img  # fill x1
+      num_genuine_pairs = np.floor(batch_size * fraction_same)
+      if i < num_genuine_pairs:
+        found_match = False
+        # find random genuine match
+        while found_match == False:
+          rand_idx2 = np.random.randint(self._num_examples, size=1)
+          poss_match_label = self._labels[rand_idx2]
+          if ((rand_idx2 not in used_idxs)
+              and (np.nonzero(rand_label) == np.nonzero(poss_match_label))):
+            x2[i, :, :, :] = self._images[rand_idx2]
+            used_idxs.append(rand_idx2)
+            labels[i] = 1
+            found_match = True
+      else:
+        found_opposite = False
+        # find random opposite match
+        while found_opposite == False:
+          rand_idx3 = np.random.randint(self._num_examples, size=1)
+          poss_opposite_label = self._labels[rand_idx3]
+          if ((rand_idx3 not in used_idxs)
+              and (np.nonzero(rand_label) == np.nonzero(poss_opposite_label))):
+            x2[i, :, :, :] = self._images[rand_idx3]
+            used_idxs.append(rand_idx3)
+            found_opposite = True
 
-    # non_class_images_index = np.nonzero(label_anchor_image)[0][0] != np.nonzero(self.labels)[1]
-    non_class_images = self.images[~class_images_index]
-    random_non_class_indexes = np.random.choice(len(non_class_images), batch_size - fraction_same_number)
-    random_non_class_images = non_class_images[random_non_class_indexes]
-    random_non_class_labels = np.zeros(len(random_non_class_images))
-
-    x1 = np.tile(anchor_image, (batch_size, 1, 1, 1))
-    labels = np.append(random_class_labels, random_non_class_labels)
-    x2 = np.concatenate((random_class_images, random_non_class_images))
+    # fraction_same_number = int(fraction_same * batch_size)
+    #
+    # index_anchor_image = np.random.choice(len(self.images), 1)[0]
+    # label_anchor_image = self.labels[index_anchor_image]
+    # anchor_image = self.images[index_anchor_image]
+    #
+    # class_images_index = np.nonzero(label_anchor_image)[0][0] == np.nonzero(self.labels)[1]
+    # class_images = self.images[class_images_index]
+    # # class_labels = self.labels[class_images_index]
+    # random_class_indexes = np.random.choice(len(class_images), fraction_same_number)
+    # random_class_images = class_images[random_class_indexes]
+    # random_class_labels = np.ones(len(random_class_images))
+    #
+    # # non_class_images_index = np.nonzero(label_anchor_image)[0][0] != np.nonzero(self.labels)[1]
+    # non_class_images = self.images[~class_images_index]
+    # random_non_class_indexes = np.random.choice(len(non_class_images), batch_size - fraction_same_number)
+    # random_non_class_images = non_class_images[random_non_class_indexes]
+    # random_non_class_labels = np.zeros(len(random_non_class_images))
+    #
+    # x1 = np.tile(anchor_image, (batch_size, 1, 1, 1))
+    # labels = np.append(random_class_labels, random_non_class_labels)
+    # x2 = np.concatenate((random_class_images, random_non_class_images))
 
     ########################
     # END OF YOUR CODE    #

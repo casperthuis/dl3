@@ -11,60 +11,71 @@ module load cudnn/7.5-v5
 
 
 
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.01 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.01/
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.01 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.01/
 
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.05 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.05/
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.05 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.05/
 
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.5 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5/
-
-
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.0 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.0/
-
-python train_model.py --reg_strength 0.001 \
-                      --dropout_rate 0.0 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.001drop_0.0/
-
-python train_model.py --reg_strength 0.1 \
-                      --dropout_rate 0.0 \
-                      --batch_normal 0\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.1drop_0.0/
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.5 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5/
 
 
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.5 \
-                      --batch_size 64 \
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_64/
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.0 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.0/
 
-python train_model.py --reg_strength 0.0001 \
-                      --dropout_rate 0.5 \
-                      --batch_size 256\
-                      --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_256/
+#python train_model.py --reg_strength 0.001 \
+#                      --dropout_rate 0.0 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.001drop_0.0/
+
+#python train_model.py --reg_strength 0.1 \
+#                      --dropout_rate 0.0 \
+#                      --batch_normal 0\
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.1drop_0.0/
+
+
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.5 \
+#                      --batch_size 64 \
+#                      --summary 1\
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_64/
+
+#python train_model.py --reg_strength 0.0001 \
+#                      --dropout_rate 0.5 \
+#                      --batch_size 256\
+#                      --summary 1\#
+#                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_256/
 
 python train_model.py --reg_strength 0.0001 \
                       --dropout_rate 0.5 \
                       --batch_size 512\
                       --summary 1\
-                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_512/
+                      --log_dir ./logs/cifar10/reg_0.0001drop_0.5batch_512_second/
+
+python train_model.py --reg_strength 0.001 \
+                      --dropout_rate 0.5 \
+                      --batch_size 512\
+                      --summary 1\
+                      --log_dir ./logs/cifar10/reg_0.001drop_0.5batch_512/
 
 
+python train_model.py --reg_strength 0.1 \
+                      --dropout_rate 0.0 \
+                      --batch_normal 0\
+                      --summary 1\
+                      --log_dir ./logs/cifar10/reg_0.01drop_0.0/
