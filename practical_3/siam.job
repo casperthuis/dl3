@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -n 1
 #SBATCH -p gpu
-#SBATCH -t 05:30:00
+#SBATCH -t 06:00:00
 #SBATCH -o siam.output
 #SBATCH -e siam.error
 
@@ -14,7 +14,7 @@ python train_model.py --train_model 'siamese' \
                       --faction_same 0.2\
                       --summary 1\
                       --saver 1\
-                      --max_steps 50000\
+                      --max_steps 15000\
                       --logdir ./logs/cifar10/siamese/step50k_new
 
 

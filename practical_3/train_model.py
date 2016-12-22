@@ -224,7 +224,7 @@ def train_siamese():
 
     cifar = cifar10_siamese_utils.get_cifar10(FLAGS.data_dir)[0]
 
-    # test = cifar10_siamese_utils.create_dataset()
+
 
     with tf.name_scope('x'):
         x1 = tf.placeholder("float", [None, 32, 32, 3], name="X_train")
@@ -285,7 +285,9 @@ def train_siamese():
                 print("Iteration {0:d}/{1:d}. Validation Loss = {2:.3f}".format(
                     i, FLAGS.max_steps, test_loss))
             if i % 25000 == 0:
-                saver.save(sess, FLAGS.checkpoint_dir + '/siamese_new.ckpt%' %i)
+                saver.save(sess, FLAGS.checkpoint_dir + '/siamese_new%i.ckpt' %i)
+
+        saver.save(sess, FLAGS.checkpoint_dir + '/siamese_new.ckpt')
     ########################
     # PUT YOUR CODE HERE  #
     ########################
@@ -364,7 +366,7 @@ def feature_extraction():
             sess.run(tf.initialize_all_variables())
             saver = tf.train.Saver()
             print("loading previous session")
-            saver.restore(sess, FLAGS.checkpoint_dir + "/siamese.ckpt")
+            saver.restore(sess, FLAGS.checkpoint_dir + "/siamese_new50000.ckpt")
 
             print("Evaluating model")
             cifar10 = cifar10_utils.get_cifar10('cifar10/cifar-10-batches-py')
@@ -374,7 +376,7 @@ def feature_extraction():
 
             l2_norm = tf.get_default_graph().get_tensor_by_name("ConvNet/l2norm:0").eval(feed_dict)
 
-            _tnse(l2_norm, y_test, "siamese_fcl2")
+            _tnse(l2_norm, y_test, "siamese_l2norm")
 
     ########################
     # END OF YOUR CODE    #

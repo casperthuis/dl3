@@ -1,2 +1,5 @@
 model_checkpoint_path: "siamese_new.ckpt"
+all_model_checkpoint_paths: "siamese_new0.ckpt"
+all_model_checkpoint_paths: "siamese_new25000.ckpt"
+all_model_checkpoint_paths: "siamese_new50000.ckpt"
 all_model_checkpoint_paths: "siamese_new.ckpt"

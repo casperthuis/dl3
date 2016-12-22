@@ -18,8 +18,8 @@ saver : 0
 fraction_same : 0.2
 loading previous session
 Evaluating model
-Calculating TSNE for layersiamese_fcl2
+Calculating TSNE for layersiamese_l2norm
 Creating figure
-Saved image to images/siamese_fcl2.png
+Saved image to images/siamese_l2norm.png
 Data dumped in tsne_data/
-Total run time 298 seconds: 
+Total run time 290 seconds: 
